@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Pharmacy Management System</title>
+    
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='in.css') }}">
+</head>
+
+<body>
+
+    <body>
+
+        <div class="header">
+            <h1><img src="{{ url_for('static', filename='icon-pharmaco.png') }}" alt="PharmaCO Icon">PharmaCO</h1>
+
+            <nav>
+                <ul class="navbar">
+                  <li>  <a href="#" onclick="window.print();">Print Invoice</a></li>
+                  <li><a href="{{ url_for('sell_medicine_route') }}"><i class="fa-solid fa-right-from-bracket"></i> Back</a></li>
+                </ul>
+              </nav>
+        </div>
+
+
+        <div class="invoice-container">
+            <div class="invoice-header">
+                <h1>PharmaCO </h1>
+            </div>
+            <div class="customer-info">
+
+                {% if customers %}
+                <h2>Customer Details</h2>
+                {% for customer in customers %}
+                <p>Invoice ID : {{ customer.id }}</p>
+                <p>Customer Name : {{ customer.customer_name }}</p>
+                <p>Phone Number : {{ customer.phone_no }}</p>
+                <p>Issued By : {{ customer.issued_by }}</p>
+                <p>Date : {{ date }}</p>
+
+                {% endfor %}
+                {% endif %}
+            </div>
+
+
+            {% if invoice_data %}
+            <h2>Items Purchased</h2>
+            <table class="invoice-table">
+                <tr>
+                    <th>Medicine Name</th>
+                    <th>Quantity Sold</th>
+                    <th>Price</th>
+                    <th>Total Amount</th>
+                </tr>
+                {% for item in invoice_data.invoice_items %}
+                <tr>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.quantity_sold }}</td>
+                    <td>{{ item.price }}</td>
+                    <td>{{ item.total_amount }}</td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td colspan="3" style="text-align:right;">Total Amount:</td>
+                    <td>{{ invoice_data.total_amount }}</td>
+                </tr>
+            </table>
+            {% endif %}
+        </div>
+
+      
+    </body>
+
+</html>

@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pharmaco
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pharmaco
+  template:
+    metadata:
+      labels:
+        app: pharmaco
+    spec:
+      containers:
+      - name: pharmaco
+        image: shiva9921/pharmaco:2
+        ports:
+        - containerPort: 8080
+        env:
+        - name: MYSQL_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: pharmaco-config-db         
+              key: MYSQL_HOST 
+        - name: MYSQL_DB
+          valueFrom:
+            configMapKeyRef:
+              name: pharmaco-config-db        
+              key: MYSQL_DB 
+ 
+        - name: MYSQL_USER
+          valueFrom:
+            configMapKeyRef:
+              name: pharmaco-config-db        
+              key: MYSQL_USER
+
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              name: pharmaco-config-db
+              key: MYSQL_PASSWORD
+              
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pharmaco-service
+spec:
+  selector:
+    app: pharmaco
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: LoadBalancer
+  sessionAffinity: ClientIP  # Set session affinity to ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 10800  # Set the session timeout (optional)

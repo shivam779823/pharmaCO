@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>PharmaCO</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='sell.css') }}">
+</head>
+
+<body>
+  <h2>Order medicines</h2>
+
+  <!-- Customer Information Form -->
+  <form method="post" action="/order_medicine" onsubmit="return validateForm()">
+    <label for="customer_name">Name:</label>
+    <input type="text" name="customer_name" id="customer_name" required>
+    <label for="phone_no">Phone No:</label>
+    <input type="text" name="phone_no" id="phone_no" required>
+    <label for="address">Address:</label>
+    <input type="text" name="address" id="address" required>
+
+    <!-- Medicine Form -->
+    <div id="medicines-container">
+      <div class="medicine-form">
+        <label for="medicine_name">Medicine Name:</label>
+        <input type="text" name="medicine_name" required>
+        <label for="quantity">Quantity:</label>
+        <input type="number" name="quantity" min="1" required>
+        <input type="button" class="remove-button" value="Remove" onclick="removeMedicineForm(this)">
+      </div>
+    </div>
+    <input type="button" value="Add More" onclick="addMedicineForm()">
+    <input type="submit" class="sell-button" value="Order">
+  </form>
+
+  <div id="medicine-list">
+    <h3>Selected Medicines:</h3>
+    <ul id="selected-medicines"></ul>
+  </div>
+
+
+
+  <script>
+    function addMedicineForm() {
+      var container = document.getElementById('medicines-container');
+      var div = document.createElement('div');
+      div.className = 'medicine-form';
+      div.innerHTML = `
+        <label for="medicine_name">Medicine Name:</label>
+        <input type="text" name="medicine_name" required>
+        <label for="quantity">Quantity:</label>
+        <input type="number" name="quantity" min="1" required>
+        <input type="button" class="remove-button" value="Remove" onclick="removeMedicineForm(this)">
+      `;
+      container.appendChild(div);
+    }
+
+    function removeMedicineForm(button) {
+      var container = document.getElementById('medicines-container');
+      container.removeChild(button.parentNode);
+    }
+
+    function validateForm() {
+      var customerName = document.getElementById('customer_name').value;
+      var phoneNo = document.getElementById('phone_no').value;
+      var medicines = document.querySelectorAll('.medicine-form');
+
+      if (customerName === '' || phoneNo === '' || medicines.length === 0) {
+        alert('Please fill in all required fields.');
+        return false;
+      }
+
+      // You can add more validation as needed.
+
+      // Log the order (you'll need server-side code for this).
+      console.log('Order submitted:', customerName, phoneNo, medicines);
+
+      // Display selected medicines to the user.
+      var selectedMedicinesList = document.getElementById('selected-medicines');
+      selectedMedicinesList.innerHTML = '';
+      medicines.forEach(function (medicineForm) {
+        var medicineName = medicineForm.querySelector('input[name="medicine_name"]').value;
+        var quantity = medicineForm.querySelector('input[name="quantity"]').value;
+        var listItem = document.createElement('li');
+        listItem.textContent = `${quantity} x ${medicineName}`;
+        selectedMedicinesList.appendChild(listItem);
+      });
+
+      return true;
+    }
+  </script>
+</body>
+</html>
