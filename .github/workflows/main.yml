@@ -4,7 +4,16 @@
 
 name: CI Pipeline 
 on:
-  [pull_request, workflow_dispatch]
+  push:
+    branches: 
+      UAT
+  pull_request:
+    branches: 
+        UAT
+        main
+  workflow_dispatch:
+      
+    
 env:     
   IMAGE: pharmaco
   DOCKERHUB_USERNAME: shiva9921 
@@ -71,8 +80,10 @@ jobs:
         with:
           sarif_file: 'trivy-results.sarif'
 
+      
       #STEP 6 Push
       - name: Image push
+        if: github.branch == 'main'
         run: |
           docker push ${{env.DOCKERHUB_USERNAME}}/${{env.IMAGE}}:${{github.run_number}} 
      
