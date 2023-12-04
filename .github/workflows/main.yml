@@ -38,30 +38,36 @@ jobs:
 #       #STEP 2 Lint
       - name: Linting
         run: |
-          find . -name \*.py | xargs pylint -f parseable | tee pylint.log
-          
+          pylint --output-format=json *.py > pylint_results.json
+          pylint *.py | tail -n 2 >> pylint_results.json
+    
+      - name: Upload Pylint results
+        uses: actions/upload-artifact@v2
+        with:
+          name: pylint-results
+          path: pylint_results.json
                
-#       #STEP 3 Dockerhub login
-      - name: Login to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+# #       #STEP 3 Dockerhub login
+#       - name: Login to Docker Hub
+#         uses: docker/login-action@v2
+#         with:
+#           username: ${{ secrets.DOCKERHUB_USERNAME }}
+#           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-#       #STEP 4 Build and Push
-      - name: Build and push
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          tags: ${{env.DOCKERHUB_USERNAME}}/${{env.IMAGE}}:${{github.run_number}} 
+# #       #STEP 4 Build and Push
+#       - name: Build and push
+#         uses: docker/build-push-action@v3
+#         with:
+#           context: .
+#           file: ./Dockerfile
+#           push: true
+#           tags: ${{env.DOCKERHUB_USERNAME}}/${{env.IMAGE}}:${{github.run_number}} 
       
 
    
-      - name: kuberntest manifest
-        run: |
-          sed -i 's/v1/v${{github.run_number}}/g' ${{ github.workspace }}/kubernets/deployment.yaml
+#       - name: kuberntest manifest
+#         run: |
+#           sed -i 's/v1/v${{github.run_number}}/g' ${{ github.workspace }}/kubernets/deployment.yaml
      
 
    
