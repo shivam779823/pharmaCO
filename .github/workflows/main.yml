@@ -61,7 +61,7 @@ jobs:
    
       - name: kuberntest manifest
         run: |
-          sed -i 's/2/${{github.run_number}}/g' ${{ github.workspace }}/kuberntes/deployment.yaml
+          sed -i 's/v1/v${{github.run_number}}/g' ${{ github.workspace }}/kuberntes/deployment.yaml
      
 
    
