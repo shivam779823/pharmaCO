@@ -37,8 +37,8 @@ jobs:
 #       #STEP 2 Lint
       - name: Linting
         run: |
-          pylint --output-format=json app.py > pylint_results.json
-          pylint app.py | tail -n 2 >> pylint_results.json
+          pylint --output-format=json *.py > pylint_results.json
+          # pylint app.py | tail -n 2 >> pylint_results.json
     
       - name: Upload Pylint results
         uses: actions/upload-artifact@v2
