@@ -4,7 +4,7 @@
 
 name: CI Pipeline 
 on:
-  [push,pull_request, workflow_dispatch]
+  [pull_request, workflow_dispatch]
 env:     
   IMAGE: pharmaco
   DOCKERHUB_USERNAME: shiva9921 
@@ -79,7 +79,7 @@ jobs:
       - name: kuberntest manifest
         run: |
           sed -i 's/v1/v${{github.run_number}}/g' ${{ github.workspace }}/kubernets/deployment.yaml
-          cat /kubernets/deployment.yaml
+          
 
    
      
