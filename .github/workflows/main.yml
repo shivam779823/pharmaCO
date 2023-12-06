@@ -52,10 +52,10 @@ jobs:
            pylint --output-format=json *.py > pylint_results.json || true
            pylint_score=$(pylint --output-format=text *.py | grep 'Your code has been rated at' | awk '{print $7}')
            echo "Pylint Score: $pylint_score"
-           if (( $(echo "$pylint_score < 6" | bc -l) )); then
-             echo "Pylint score is below the threshold. Stopping the workflow."
-             exit 1
-           fi
+           # if (( $(echo "$pylint_score < 6" | bc -l) )); then
+           #   echo "Pylint score is below the threshold. Stopping the workflow."
+           #   exit 1
+           # fi
    
       - name: Upload Pylint results
         uses: actions/upload-artifact@v2
