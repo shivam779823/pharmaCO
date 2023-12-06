@@ -2,3 +2,4 @@ flask
 reportlab
 gunicorn
 mysql-connector-python
+setuptools:65.5.1
