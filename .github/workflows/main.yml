@@ -6,11 +6,13 @@ name: CI Pipeline
 on:
   push:
     branches: 
-      UAT
+      - develop
+      - 'feature/*'
+      - 'hotfix/*'
+      
   pull_request:
     branches: 
-        UAT
-        main
+      - main
   workflow_dispatch:
       
     
@@ -47,8 +49,13 @@ jobs:
 
       - name: Linting
         run: |
-          pylint --output-format=json *.py > pylint_results.json || true
-          pylint *.py | tail -n 2 >> pylint_results.json
+           pylint --output-format=json *.py > pylint_results.json || true
+           pylint_score=$(pylint --output-format=text *.py | grep 'Your code has been rated at' | awk '{print $7}')
+           echo "Pylint Score: $pylint_score"
+           # if (( $(echo "$pylint_score < 6" | bc -l) )); then
+           #   echo "Pylint score is below the threshold. Stopping the workflow."
+           #   exit 1
+           # fi
    
       - name: Upload Pylint results
         uses: actions/upload-artifact@v2
@@ -83,11 +90,12 @@ jobs:
       
       #STEP 6 Push
       - name: Image push
-        if: github.branch == 'main'
+        if: github.branch == 'main' || github.branch == 'develop' 
         run: |
           docker push ${{env.DOCKERHUB_USERNAME}}/${{env.IMAGE}}:${{github.run_number}} 
      
       - name: kuberntest manifest
+        if: github.branch == 'main' || github.branch == 'develop' 
         run: |
           sed -i 's/v1/v${{github.run_number}}/g' ${{ github.workspace }}/kubernets/deployment.yaml
           
