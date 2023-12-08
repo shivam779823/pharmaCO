@@ -87,17 +87,7 @@ jobs:
         with:
           sarif_file: 'trivy-results.sarif'
 
-      
-      #STEP 6 Push
-      - name: Image push
-        if: github.branch == 'main' || github.branch == 'develop' 
-        run: |
-          docker push ${{env.DOCKERHUB_USERNAME}}/${{env.IMAGE}}:${{github.run_number}} 
-     
-      - name: kuberntest manifest
-        if: github.branch == 'main' || github.branch == 'develop' 
-        run: |
-          sed -i 's/v1/v${{github.run_number}}/g' ${{ github.workspace }}/kubernets/deployment.yaml
+    
           
 
    
