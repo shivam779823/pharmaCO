@@ -1,19 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: pharmaco
+  name: {{ .Values.appName }}
+  namespace: {{ .Values.Ns }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: pharmaco
+      app: {{ .Values.appName }}
   template:
     metadata:
       labels:
-        app: pharmaco
+        name: {{ .Values.appName }}
     spec:
       containers:
-      - name: pharmaco
+      - name: {{ .Values.appName }}
         image: shiva9921/pharmaco:2
         ports:
         - containerPort: 8080
@@ -45,10 +46,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: pharmaco-service
+  name: {{ .Values.appName }}-service
+  namespace: {{ .Values.Ns }}
 spec:
   selector:
-    app: pharmaco
+    app: 
   ports:
     - protocol: TCP
       port: 80
