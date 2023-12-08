@@ -14,7 +14,7 @@ on:
     branches: 
       - main
   workflow_dispatch:
-      
+
     
 env:     
   IMAGE: pharmaco
