@@ -4,7 +4,7 @@
 #*****************************************
 
 #Imports
-from flask import Flask, render_template, request, redirect, url_for , session ,send_file
+from flask import Flask, render_template, request, redirect, url_for , session ,send_file ,jsonify
 import hashlib
 from datetime import datetime
 import os
@@ -465,6 +465,14 @@ def logout():
 
 #########################################################################
 
+
+@app.route('/health')
+def health():
+    return jsonify(status="up"
+    )
+
+
+
 #HOME
 
 @app.route('/')  
@@ -480,12 +488,12 @@ def home():
     out_of_stock_medicines = [medicine for medicine in all_medicines if medicine.quantity == 0]
     recently_sold=pharmacy.get_transaction_details()
     recently_sold = recently_sold[-10:]
-     #logic for Total data blocks
     total_expired=len(expired_medicines)
     total_out_stocks=len(out_of_stock_medicines)
     total_sold=len(recently_sold)
 
-    return render_template('index.html', medicines=all_medicines, expired_medicines=expired_medicines , recently=recently , outstocks=out_of_stock_medicines ,users=users,sell=recently_sold, outstocks=out_of_stock_medicines ,users=users,sell=recently_sold ,total_expired=total_expired ,OFS=total_out_stocks ,total_sold=total_sold)
+
+    return render_template('index.html', medicines=all_medicines, expired_medicines=expired_medicines , recently=recently , outstocks=out_of_stock_medicines ,users=users,sell=recently_sold ,total_expired=total_expired ,OFS=total_out_stocks ,total_sold=total_sold)
 
 
 @app.route('/remove_user', methods=['GET', 'POST'])  
