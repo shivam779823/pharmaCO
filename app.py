@@ -480,23 +480,26 @@ def home():
     out_of_stock_medicines = [medicine for medicine in all_medicines if medicine.quantity == 0]
     recently_sold=pharmacy.get_transaction_details()
     recently_sold = recently_sold[-10:]
+     #logic for Total data blocks
+    total_expired=len(expired_medicines)
+    total_out_stocks=len(out_of_stock_medicines)
+    total_sold=len(recently_sold)
 
-
-    return render_template('index.html', medicines=all_medicines, expired_medicines=expired_medicines , recently=recently , outstocks=out_of_stock_medicines ,users=users,sell=recently_sold)
+    return render_template('index.html', medicines=all_medicines, expired_medicines=expired_medicines , recently=recently , outstocks=out_of_stock_medicines ,users=users,sell=recently_sold, outstocks=out_of_stock_medicines ,users=users,sell=recently_sold ,total_expired=total_expired ,OFS=total_out_stocks ,total_sold=total_sold)
 
 
 @app.route('/remove_user', methods=['GET', 'POST'])  
 @login_required
 def remove_user():
     message=None
-    all_users = pharmacy.get_users()
+    users = pharmacy.get_users()
     if request.method == 'POST':
         selected_user = request.form.getlist('user_checkbox')
 
         for username in selected_user:
             pharmacy.remove_user(username)
         message=f"{username} Removed Successfully! "
-    return render_template('remove_user.html',users=all_users,message=message)
+    return render_template('remove_user.html',users=users,message=message)
 
 
 #add_medicine
