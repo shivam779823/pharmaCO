@@ -66,6 +66,7 @@ def after_request(response):
     return response
 
 
+
 class Medicine:
     def __init__(self, name, price, mrp, quantity, expiry,date ):
         self.name = name
@@ -504,10 +505,6 @@ def health():
 def metrics():
     return generate_latest(REGISTRY)
 
-# Wrap the Flask app with the Prometheus WSGI middleware
-app.wsgi_app = DispatcherMiddleware(app.wsgi_app, {
-    '/metrics': make_wsgi_app()
-})
 
 ######################### METRICS ################################################
 
@@ -718,6 +715,10 @@ def generate_report():
 
     return render_template('generate_report.html')
 
+# Wrap the Flask app with the Prometheus WSGI middleware
+app.wsgi_app = DispatcherMiddleware(app.wsgi_app, {
+    '/metrics': make_wsgi_app()
+})
 
 
 if __name__ == '__main__':

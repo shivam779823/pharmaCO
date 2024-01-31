@@ -4,7 +4,9 @@
 
 name: CI Pipeline - release
 on:
-  [workflow_dispatch]
+  push: 
+    branches: 
+      - main
 env:     
   IMAGE: pharmaco
   DOCKERHUB_USERNAME: shiva9921 
