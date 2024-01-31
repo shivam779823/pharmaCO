@@ -40,11 +40,14 @@ cnx_pool = pooling.MySQLConnectionPool(**db_config)
 
 
 
+
 # Define Prometheus metrics
-REQUEST_COUNTER = Counter('flask_http_request_total', 'Total number of HTTP requests')
-REQUEST_LATENCY = Histogram('flask_http_request_latency_seconds', 'HTTP request latency')
-
-
+REQUEST_COUNTER = Counter(
+    'http_request_total',
+    'Total number of HTTP requests',
+    ['path', 'status_code']  # Added label names for path and status_code
+)
+REQUEST_LATENCY = Histogram('http_request_latency_seconds', 'HTTP request latency')
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
