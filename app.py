@@ -15,6 +15,11 @@ from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet
 import mysql.connector
 from mysql.connector import pooling
+#prometheus imports
+from prometheus_client import Counter, Histogram, generate_latest, REGISTRY
+from werkzeug.middleware.dispatcher import DispatcherMiddleware
+from prometheus_client.exposition import make_wsgi_app
+import time
 
 # Define environment variables for MySQL connection
 MYSQL_HOST = os.environ.get("MYSQL_HOST", "localhost")
@@ -34,8 +39,28 @@ db_config = {
 cnx_pool = pooling.MySQLConnectionPool(**db_config)
 
 
+
+# Define Prometheus metrics
+REQUEST_COUNTER = Counter('flask_http_request_total', 'Total number of HTTP requests')
+REQUEST_LATENCY = Histogram('flask_http_request_latency_seconds', 'HTTP request latency')
+
+
+
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
+
+
+# Middleware to capture metrics for each request
+@app.before_request
+def before_request():
+    request.start_time = time.time()
+
+@app.after_request
+def after_request(response):
+    request_latency = time.time() - request.start_time
+    REQUEST_LATENCY.observe(request_latency)
+    REQUEST_COUNTER.labels(request.path, response.status_code).inc()
+    return response
 
 
 class Medicine:
@@ -463,7 +488,7 @@ def logout():
 
 
 
-#########################################################################
+######################### METRICS ################################################
 
 
 @app.route('/health')
@@ -471,6 +496,17 @@ def health():
     return jsonify(status="up"
     )
 
+# Define /metrics route to expose metrics
+@app.route('/metrics')
+def metrics():
+    return generate_latest(REGISTRY)
+
+# Wrap the Flask app with the Prometheus WSGI middleware
+app.wsgi_app = DispatcherMiddleware(app.wsgi_app, {
+    '/metrics': make_wsgi_app()
+})
+
+######################### METRICS ################################################
 
 
 #HOME
