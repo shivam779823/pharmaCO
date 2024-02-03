@@ -49,6 +49,18 @@ REQUEST_COUNTER = Counter(
 )
 REQUEST_LATENCY = Histogram('http_request_latency_seconds', 'HTTP request latency')
 
+ERROR_COUNTER = Counter(
+    'http_request_error_total',
+    'Total number of HTTP requests resulting in an error',
+    ['path', 'status_code']
+)
+TRANSACTION_COUNTER = Counter(
+    'app_transaction_total',
+    'Total number of transactions',
+    ['customer_name', 'quantity' , 'Medicine name']
+)
+
+
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 
@@ -63,6 +75,8 @@ def after_request(response):
     request_latency = time.time() - request.start_time
     REQUEST_LATENCY.observe(request_latency)
     REQUEST_COUNTER.labels(request.path, response.status_code).inc()
+    if response.status_code >= 400:
+        ERROR_COUNTER.labels(request.path, response.status_code).inc()
     return response
 
 
@@ -668,6 +682,8 @@ def sell_medicine_route():
                     # Perform the sell operation using pharmacy.sell_medicine()
                     pharmacy.sell_medicine(name, int(quantity))
                     pharmacy.add_transaction_details(customer_name, phone_no, issued_by, name, int(quantity), total_amount)
+                    TRANSACTION_COUNTER.labels(customer_name, quantity , name ).inc()
+
 
         total_amount = sum(item['total_amount'] for item in invoice)
 
