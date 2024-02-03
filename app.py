@@ -451,7 +451,7 @@ class PharmacyManagementSystem:
         if not customer_data:
             return None
         else:
-            customer = Transaction_details(*customer_data[1:])
+            customer = Transaction_details(*customer_data)
             return customer
     def close_connection_pool(self):
         self.cnx_pool.closeall()
