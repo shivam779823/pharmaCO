@@ -57,7 +57,7 @@ ERROR_COUNTER = Counter(
 TRANSACTION_COUNTER = Counter(
     'app_transaction_total',
     'Total number of transactions',
-    ['customer_name', 'quantity' , 'Medicine name']
+    ['customer_name', 'quantity' , 'Medicine_name']
 )
 
 
