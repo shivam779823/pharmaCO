@@ -59,7 +59,11 @@ TRANSACTION_COUNTER = Counter(
     'Total number of transactions',
     ['customer_name', 'quantity' , 'Medicine_name']
 )
-
+ROUTE_LATENCY = Histogram(
+    'app_route_latency_seconds',
+    'Response latency of specific routes',
+    ['route']
+)
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
@@ -542,6 +546,9 @@ def home():
     total_out_stocks=len(out_of_stock_medicines)
     total_sold=len(recently_sold)
 
+    request_latency = time.time() - request.start_time
+    ROUTE_LATENCY.labels(request.path).observe(request_latency)
+
 
     return render_template('index.html', medicines=all_medicines, expired_medicines=expired_medicines , recently=recently , outstocks=out_of_stock_medicines ,users=users,sell=recently_sold ,total_expired=total_expired ,OFS=total_out_stocks ,total_sold=total_sold)
 
@@ -581,6 +588,9 @@ def add_medicine():
 
         pharmacy.add_medicine(name, price, mrp, quantity, expiry)
         message = "Medicine added successfully!"
+
+        request_latency = time.time() - request.start_time
+        ROUTE_LATENCY.labels(request.path).observe(request_latency)
         
         # return redirect(url_for('add_medicine'))
 
@@ -596,7 +606,8 @@ def find_medicine():
         name = request.form['name']
         medicine = pharmacy.find_medicine(name)
         return render_template('find_medicine.html', medicine=medicine)
-
+    request_latency = time.time() - request.start_time
+    ROUTE_LATENCY.labels(request.path).observe(request_latency)
     return render_template('find_medicine.html', medicine=None)
 
 #update_medicine_quantity
@@ -613,6 +624,8 @@ def update_medicine_quantity_route():
         recent_update=pharmacy.recently_updated()
         message="Updated Successfully!"
         # return redirect(url_for('display_inventory'))
+        request_latency = time.time() - request.start_time
+        ROUTE_LATENCY.labels(request.path).observe(request_latency)
      
 
     return render_template('update_medicine_quantity.html' ,recently=recent_update,message=message)
@@ -630,8 +643,9 @@ def remove_medicine():
         for medicine_name in selected_medicines:
             pharmacy.remove_medicine(medicine_name)
         message="Medicine's Removed Successfully! "
-        
-        
+        request_latency = time.time() - request.start_time
+        ROUTE_LATENCY.labels(request.path).observe(request_latency)  
+       
     return render_template('remove_medicine.html', medicines=all_medicines ,message=message)
 
 
@@ -646,7 +660,8 @@ def remove_sales_history():
         pharmacy.remove_transaction_details(id)
         # pharmacy.remove_customer_info(customer_name)
         message1 = f"History for ID '{id}' removed successfully!"
-    
+        request_latency = time.time() - request.start_time
+        ROUTE_LATENCY.labels(request.path).observe(request_latency)
     # Fetch updated sales history after removal
     # sales_history = pharmacy.get_sales()
     x=pharmacy.get_transaction_details()
@@ -683,7 +698,8 @@ def sell_medicine_route():
                     pharmacy.sell_medicine(name, int(quantity))
                     pharmacy.add_transaction_details(customer_name, phone_no, issued_by, name, int(quantity), total_amount)
                     TRANSACTION_COUNTER.labels(customer_name, quantity , name ).inc()
-
+                    request_latency = time.time() - request.start_time
+                    ROUTE_LATENCY.labels(request.path).observe(request_latency)
 
         total_amount = sum(item['total_amount'] for item in invoice)
 
