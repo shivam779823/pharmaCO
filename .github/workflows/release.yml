@@ -59,12 +59,12 @@ jobs:
       #STEP 4 Build and Push
       - name: Image Build
         run: |
-          docker build -t ${{env.DOCKERHUB_USERNAME}}/${{env.IMAGE}}:${{github.run_number}} .
-      
+          docker build -t ${{env.DOCKERHUB_USERNAME}}/${{env.IMAGE}}:v1.${{github.run_number}} .
+
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: '${{env.DOCKERHUB_USERNAME}}/${{env.IMAGE}}:${{github.run_number}}'
+          image-ref: '${{env.DOCKERHUB_USERNAME}}/${{env.IMAGE}}:v1.${{github.run_number}}'
           format: 'sarif'
           output: 'trivy-results.sarif'
       
@@ -76,11 +76,11 @@ jobs:
       #STEP 6 Push
       - name: Image push
         run: |
-          docker push ${{env.DOCKERHUB_USERNAME}}/${{env.IMAGE}}:${{github.run_number}} 
+          docker push ${{env.DOCKERHUB_USERNAME}}/${{env.IMAGE}}:v1.${{github.run_number}} 
      
       - name: kuberntest manifest
         run: |
-          sed -i 's/v1/v${{github.run_number}}/g' ${{ github.workspace }}/kubernets/deployment.yaml
+          sed -i 's/v1.12/v1.${{github.run_number}}/g' ${{ github.workspace }}/kubernets/deployment.yaml
           
 
    
