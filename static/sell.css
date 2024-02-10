@@ -204,8 +204,8 @@ form {
   max-width: 600px;
   margin: 0 auto;
   padding: 20px;
-  background-color: #c3d3d7;
-  border: 1px solid #000000;
+  background-color: #ffffff;
+  /* border: 1px solid #000000; */
   box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
 }
 
@@ -275,8 +275,8 @@ a button:hover {
 
 
 .remove-button {
-  background-color: #f52213;
-  color: white;
+  background-color: #fab1b1;
+  color: rgb(94, 0, 0);
   border: none;
   padding: 5px 10px;
   cursor: pointer;
@@ -284,7 +284,7 @@ a button:hover {
 }
 
 .remove-button:hover {
-  background-color: #d32f2f;
+  background-color: #170707;
 }
 .sell-button {
   background-color: #2196F3; /* Blue color */

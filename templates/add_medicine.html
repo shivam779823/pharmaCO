@@ -72,35 +72,39 @@
     <h2>Add Medicine</h2>
    
 
-    <div id="boxa">
+<div id="boxa">
         <div id="box1"> 
             
             <form method="post" action="/add_medicine">
                 <div>
+                    <i class="fa-solid fa-square-plus" style="color: #bf2b89;"></i>
                     <label for="name">Medicine Name:</label>
                     <input type="text" name="name" required>
                 </div>
                 <div>
+                    <i class="fa-solid fa-square-plus" style="color: #bf2b89;"></i>
                     <label for="price">Price:</label>
                     <input type="number" name="price" step="0.01" required>
                 </div>
                 <div>
+                    <i class="fa-solid fa-square-plus" style="color: #bf2b89;"></i>
                     <label for="quantity">Quantity:</label>
                     <input type="number" name="quantity" required>
                 </div>
         
                 <div>
+                    <i class="fa-solid fa-square-plus" style="color: #bf2b89;"></i>
                     <label for="mrp">MRP:</label>
                     <input type="number" name="mrp" step="0.01" required>
                 </div>
         
                 <div>
-                    <label for="expiry">Expiry:</label>
+                    <label for="expiry">Expiry</label>
                     <input type="date" id="expiry" name="expiry" required>
                 </div>
         
-        
-                <input type="submit" value="Add">
+              
+                <input type="submit" value="+ Add">
         
                     {% if message %}
                     <p>{{ message }}</p>
@@ -116,7 +120,7 @@
         </div>
          
 
-    </div>
+</div>
 
 
 

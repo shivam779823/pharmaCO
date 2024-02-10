@@ -1,0 +1,301 @@
+* {
+    margin: 0;
+    font-family: Arial;
+    border: border-box;
+}
+
+.navbar{
+    height: 60px;
+    background-color: black;
+    color: white;
+    display: flex;
+    justify-content: space-evenly;
+
+
+}
+
+.nav-logo{
+    height: 50px;
+    width: 50px;
+}
+
+.logo{
+    background-image: url(Icon-pharmaco.png);
+    height: 50px;
+    width: 100;
+    background-size: cover;
+}
+
+
+.pharma{
+    display: flex;
+   
+    align-items: center;
+
+   
+}
+
+.border{
+    border: 1.5px solid transparent;
+}
+
+.border:hover{
+    border: 1.5px solid white;
+}
+
+
+.navbar-button{
+    
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    margin-top: 20px;
+    display: flex;
+  
+}
+
+.navbar-button li {
+    margin-right: 10px;
+    margin-bottom: 10px;
+    font-family: Arial;
+}
+
+
+/* Add styles to hyperlinks (anchors) inside the list items */
+.navbar-button li a {
+    text-decoration: none;
+    color: #121010;
+    padding: 6px 16px;
+    border-radius: 5px;
+    background-color: darkcyan;
+    transition: background-color 0.3s ease;
+   
+}
+
+
+/* Change the background color on hover */
+.navbar-button li a:hover {
+    background-color: coral;
+}
+
+
+/* Center thenavigation items */
+.navbar-button {
+    display: flex;
+    justify-content: center;
+}
+
+
+/* Style the dropdown container */
+.dropdown {
+    position: relative;
+}
+
+/* Style the "Remove" button */
+.dropbtn {
+    background-color: darkcyan;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 8px 20px;
+    border-radius: 5px;
+    margin-top: -7px; 
+}
+
+/* Style the dropdown content */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f0f0f0;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+/* Style the dropdown options */
+.dropdown-content a {
+    color: #333;
+    padding: 8px 12px;
+    text-decoration: none;
+    display: block;
+    border-bottom: 1px solid #ccc;
+}
+
+/* Add a hover effect to the dropdown options */
+.dropdown-content a:hover {
+    background-color: #ddd;
+}
+
+/* Show the dropdown content when the "Remove" button is hovered */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* Optional: Adjust the positioning of the dropdown options */
+.dropdown-content {
+    top: 28px; /* Adjust the value as needed to align with the button */
+}
+
+
+
+.nav-search{
+    display: flex;
+    justify-content: space-evenly;
+    background-color: pink;
+    width: 620px;
+    height: 45px;
+    margin-top: 5px;
+    border-radius: 4px;
+    border-style: dashed;
+
+}
+
+.search-select{
+    background-color: floralwhite;
+    width: 50px;
+    text-align: center;
+    border: none;
+    border-top-right-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+
+.search-input{
+    width: 100%;
+    font-size: 1rlh;
+    align-items: center;
+}
+
+.search-icon{
+    width: 45px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    background-color: darkorange;
+
+}
+
+.logout{
+    display: flex;
+    justify-content: space-evenly;
+    background-color: rgb(20, 19, 19);
+    width: 200px;
+    height: 45px;
+    margin-top: 5px;
+
+}
+
+.logout-box{
+    width: 60%;
+    margin-top: 10px;
+    align-items: center;
+}
+
+.hero-section{
+    /* background-image: url(hero.jpg); */
+    height: 100px;
+    justify-content: center;
+}
+
+.dashboard{
+    display: flex;
+    justify-content: space-evenly;
+    margin-top: 10px;
+    border: none;
+    
+}
+
+.box{
+    border: none;
+    height: 100px;
+    width: 20%;
+    border: 3px solid;
+   
+}
+
+.no{
+    text-align: center;
+    font-size: 2rem;
+    color: coral;
+}
+
+.name{
+    text-align: center;
+    background-color: rgb(0, 162, 255);
+    margin-bottom: 20px;
+}
+
+
+.data{
+    display: flex;
+    justify-content: space-evenly;
+    margin-top: 30px;
+    
+}
+
+.data-box{
+    border: 2px solid;
+    width: auto;
+    height: auto;
+}
+
+
+
+
+/* Styles for the new items table */
+.items_in_stocks {
+    border-collapse: collapse;
+    width: 50%;
+    margin: 20px auto; 
+    background: #ded8d8;
+    border-color: #000000;
+}
+
+.items_in_stocks th ,td{
+    border: 1px solid #000000;
+    text-align: left;
+    padding: 8px;
+}
+
+.items_in_stocks th {
+    background-color: #045b23;
+    color: white;
+}
+
+.expired {
+    border-collapse: collapse;
+    width: 50%;
+    margin: 20px auto; 
+    background: #eae6e6;
+}
+
+.expired th ,td{
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+.expired th {
+    background-color: #7e0a0a;
+    color: white;
+}
+
+
+.outstock {
+    border-collapse: collapse;
+    width: 50%;
+    margin: 20px auto; 
+    background: #eae6e6;
+}
+
+.outstock th ,td{
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+.outstock th {
+    background-color: rgb(2, 106, 234);
+    color: white;
+}

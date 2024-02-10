@@ -2,11 +2,16 @@
 # MAINTAINED BY: SHIVAM
 #################################################
 
-name: CI Pipeline - release
+name: CI Pipeline - PR
 on:
-  push: 
+  pull_request:  
     branches: 
       - main
+      - dev
+      - release/*
+      - hotfix/*
+      - fix/*
+
     paths-ignore: 
       - .github
       - README.md
@@ -21,20 +26,17 @@ jobs:
       security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
       actions: read 
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ["3.9",]
 
     steps:
       - name: code Checkout
         uses: actions/checkout@v3
         with:
-           fetch-depth: 0
+          fetch-depth: 0
 
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v2
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: 3.9
 
       - name: install dependencies
         run: |
@@ -45,7 +47,7 @@ jobs:
         run: |
           pylint --output-format=json *.py > pylint_results.json || true
           pylint *.py | tail -n 2 >> pylint_results.json
-     
+
       - name: Code Quality Gate Check
         id: parse_pylint
         run: |
@@ -85,16 +87,3 @@ jobs:
         uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: 'trivy-results.sarif'
-
-      #STEP 6 Push
-      - name: Image push
-        run: |
-          docker push ${{env.DOCKERHUB_USERNAME}}/${{env.IMAGE}}:v1.${{github.run_number}} 
-     
-      - name: kuberntest manifest
-        run: |
-          sed -i 's/v1.12/v1.${{github.run_number}}/g' ${{ github.workspace }}/kubernets/deployment.yaml
-          
-
-   
-     

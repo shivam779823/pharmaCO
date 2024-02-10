@@ -67,7 +67,8 @@
 
 
 
-    <h2>Sell Medicine</h2>
+ <h2>Sell <i class="fa-solid fa-hand-holding-medical" style="color: #cc245f;"></i> Medicines</h2>
+
   
     <!-- Customer Information Form -->
     <form method="post" action="/sell_medicine">
@@ -91,7 +92,7 @@
           </select>
           <label for="quantity">Quantity:</label>
           <input type="number" name="quantity" min="1" required>
-          <input type="submit" class="remove-button" value="Remove" onclick="removeMedicineForm(this)">
+          <input type="submit" class="remove-button" value="X" onclick="removeMedicineForm(this)">
         </div>
       </div>
       <input type="button" value="Add More" onclick="addMedicineForm()">
@@ -121,7 +122,7 @@
         </select>
         <label for="quantity">Quantity:</label>
         <input type="number" name="quantity" min="1" required>
-        <input type="submit" class="remove-button" value="Remove" onclick="removeMedicineForm(this)">
+        <input type="submit" class="remove-button" value="X" onclick="removeMedicineForm(this)">
       `;
         container.appendChild(div);
       }

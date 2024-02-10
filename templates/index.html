@@ -71,41 +71,42 @@
 
         <div id="boxa">
             <div id="box1">
-                <h1><img src="{{ url_for('static', filename='ambu.png') }}" alt="PharmaCO Icon"></h1>
-
-
+                <h1><img src="{{ url_for('static', filename='zandu.jpg') }}" alt="PharmaCO Icon"></h1>
+                
             </div>
             <div id="box2">
 
-                <h1><img src="{{ url_for('static', filename='man.png') }}" alt="PharmaCO Icon"></h1>
+                <h1><img src="{{ url_for('static', filename='pad.jpg') }}" alt="PharmaCO Icon"></h1>
 
             </div>
 
             <div id="box3">
 
-                <h1><img src="{{ url_for('static', filename='tab.png') }}" alt="PharmaCO Icon"></h1>
+                <h1><img src="{{ url_for('static', filename='paracetamol.png') }}" alt="PharmaCO Icon"></h1>
 
 
             </div>
 
         </div>
 
+        
+
         <div class="dashboard">
             <div class="box1 boxx">
                 <h2 class="name">Expired</h2>
-                <p class="no">{{ total_expired }}</p>
+                <p class="no"><i class="fa-solid fa-triangle-exclamation fa-shake fa-flip-horizontal fa-lg" style="color: #db0a49;"></i>  {{ total_expired }}</p>
             </div>
             <div class="box2 boxx">
                 <h2 class="name">Sold</h2>
-                <p class="no">{{total_sold}}</p>
+                <p class="no"><i class="fa-solid fa-briefcase-medical fa-lg" style="color: #e5155e;"></i> {{total_sold}}</p>
             </div>
             <div class="box3 boxx"> 
                 <h2 class="name">oders</h2>
-                <p class="no">0</p>
+                <p class="no"><i class="fa-solid fa-truck-medical fa-lg" style="color: #B197FC;"></i> 0</p>
             </div>
             <div class="box4 boxx">
                 <h2 class="name">OUT OF STOCKS</h2>
-                <p class="no">{{ OFS }}</p>
+                <p class="no"> {{ OFS }}       <i class="fa-solid fa-circle-exclamation" style="color: #f77ea8;"></i></p>
             </div>
         </div>
 
