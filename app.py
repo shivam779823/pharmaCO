@@ -238,7 +238,7 @@ class PharmacyManagementSystem:
         for key, transactions in combined_transactions.items():
             total_amount = sum(transaction.total_amount for transaction in transactions)
             # Convert datestamp to datetime object
-            datestamp = datetime.strptime(key[1], '%Y-%m-%d %H:%M:%S')  # Adjust the format as needed
+            datestamp = datetime.strptime(key[1].strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
             combined_transaction = {
                 'customer_name': key[0],
                 'datestamp': datestamp,
