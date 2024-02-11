@@ -314,9 +314,6 @@ class PharmacyManagementSystem:
 
             cursor.execute('UPDATE medicines SET quantity = %s WHERE name = %s', (quantity_left, name))
 
-            cursor.execute('INSERT INTO transaction_info (customer_name, phone_no, issued_by, medicine_name, quantity_sold, total_amount, datestamp) VALUES (%s, %s, %s, %s, %s, %s, %s)',
-                            ("", "", "", name, int(quantity), total_amount, datestamp))
-
             connection.commit()
             print(f"Sold {quantity} units of '{name}' for ${total_amount:.2f}")
         else:
