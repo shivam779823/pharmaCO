@@ -15,6 +15,7 @@ from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet
 import mysql.connector
 from mysql.connector import pooling
+from collections import defaultdict
 #prometheus imports
 from prometheus_client import Counter, Histogram, generate_latest, REGISTRY
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
@@ -223,6 +224,30 @@ class PharmacyManagementSystem:
             return True
         else:
             return False
+    
+    #datastructure  
+    @staticmethod
+    def combine_transactions(transactions):
+        combined_transactions = defaultdict(list)
+    
+        for transaction in transactions:
+            key = (transaction.customer_name, transaction.datestamp)
+            combined_transactions[key].append(transaction)
+    
+        combined_data = []
+        for key, transactions in combined_transactions.items():
+            total_amount = sum(transaction.total_amount for transaction in transactions)
+            # Convert datestamp to datetime object
+            datestamp = datetime.strptime(key[1], '%Y-%m-%d %H:%M:%S')  # Adjust the format as needed
+            combined_transaction = {
+                'customer_name': key[0],
+                'datestamp': datestamp,
+                'total_amount': total_amount,
+                'transactions': transactions
+            }
+            combined_data.append(combined_transaction)
+    
+        return combined_data
 
     def add_medicine(self, name, price, mrp, quantity, expiry):
         date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -268,7 +293,7 @@ class PharmacyManagementSystem:
             print(f"Medicine '{name}' does not exist in the inventory.")
             cursor.close()
             connection.close()
-            return
+            return f"Medicine '{name}' does not exist in the inventory."
 
         current_quantity = int(current_quantity_row[0])
 
@@ -279,7 +304,7 @@ class PharmacyManagementSystem:
             print(f"Medicine '{name}' does not exist in the inventory.")
             cursor.close()
             connection.close()
-            return
+            return f"Medicine '{name}' does not exist in the inventory."
 
         if current_quantity and current_quantity >= int(quantity):
             total_amount = medicine_data[3] * int(quantity)
@@ -746,6 +771,13 @@ def generate_report():
         return send_file(report_filename, as_attachment=True)
 
     return render_template('generate_report.html')
+
+@app.route('/transaction_history')
+@login_required
+def transaction_history():
+    transactions = pharmacy.get_transaction_details()
+    combined_transactions = pharmacy.combine_transactions(transactions)
+    return render_template('transaction_history.html', combined_transactions=combined_transactions)
 
 # Wrap the Flask app with the Prometheus WSGI middleware
 app.wsgi_app = DispatcherMiddleware(app.wsgi_app, {

@@ -33,7 +33,7 @@
     <p>{{ message1 }}</p>
     {% endif %}
 
-    <h3>Remove history</h3>
+    <h5>Remove history</h5>
     <form method="post" action="/remove_sales_history">
         {% if medicines %}
         <table>
@@ -64,7 +64,7 @@
             </tr>
             {% endfor %}
         </table>
-        <input type="submit" value="Remove Selected history">
+        <input type="submit" value="Remove history">
         {% else %}
         <p>No history.</p>
         {% endif %}

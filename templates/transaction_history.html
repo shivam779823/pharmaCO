@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pharmacy Management System</title>
+    <!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='transaction_history.css') }}"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            text-align: center;
+            color: #0ba3cd;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #f6f6f6;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(244, 237, 237, 0.1);
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #aba5a5;
+        }
+        th {
+            background-color: #f2f2f2;
+            color: #191919;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #8c8f91;
+        }
+        input[type=text] {
+            padding: 8px;
+            margin: 5px 0;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        label {
+            margin-right: 10px;
+        }
+        .navbar {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #eaf0f4;
+        }
+        .navbar li {
+            float: left;
+        }
+        .navbar li a {
+            display: block;
+            color: rgb(0, 0, 0);
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+        .navbar li a:hover {
+            background-color: #1ea3cf;
+            color: black;
+        }
+        .dropdown {
+            float: left;
+            overflow: hidden;
+        }
+        .dropdown .dropbtn {
+            font-size: 16px;
+            border: none;
+            outline: none;
+            color: rgb(19, 18, 18);
+            padding: 14px 16px;
+            background-color: inherit;
+            font-family: inherit;
+            margin: 0;
+        }
+        .navbar a:hover, .dropdown:hover .dropbtn {
+            background-color:  #1ea3cf;
+            color: black;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        .dropdown-content a {
+            float: none;
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: left;
+        }
+        .dropdown-content a:hover {
+            background-color: #1a9061;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        .fa {
+            margin-right: 5px;
+        }
+        .dropbtn {
+            background-color: #333;
+        }
+        .dropbtn:hover {
+            background-color: #7e5454;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    
+
+    <nav>
+        <ul class="navbar">
+            <li><a href="{{ url_for('home') }}"><i class="fa-solid fa-house-medical"></i> Home</a></li>
+            <li><a href="{{ url_for('display_inventory') }}"><i class="fa-solid fa-truck-medical"></i>Inventory</a></li>
+            <li>
+                <div class="dropdown">
+                    <button class="dropbtn"><i class="fa-solid fa-trash"></i> Remove</button>
+                    <div class="dropdown-content">
+                        <!-- Replace the URLs with the appropriate URLs for the remove actions -->
+                        <a href="{{ url_for('remove_medicine', action='option1') }}">Remove Medicine</a>
+                        <a href="{{ url_for('remove_sales_history', action='option2') }}">Delete History</a>
+
+                        <!-- Add more options as needed -->
+                    </div>
+                </div>
+            </li>
+            <li><a href="{{ url_for('register') }}"><i class="fa-solid fa-user-doctor"></i> Register</a></li>
+            <li><a href="{{ url_for('logout') }}"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+            <h1>PharmaCO <i class="fa-brands fa-opencart fa-lg" style="color: #74C0FC;"></i></h1>
+        </ul>
+    </nav>
+
+    <!-- Search input for customer name -->
+    <label for="customerSearch">Customer Name:</label>
+    <input type="text" id="customerSearch" onkeyup="searchCustomer()" placeholder="Enter customer name..">
+
+    <!-- Search input for medicine name -->
+    <label for="medicineSearch">Medicine Name:</label>
+    <input type="text" id="medicineSearch" onkeyup="searchMedicine()" placeholder="Enter medicine name..">
+
+    <!-- Display transaction history in table format -->
+    <table border="3">
+        <thead>
+            <tr>
+                <th>Customer Name</th>
+                <th>Date</th>
+                <th>Medicine Name</th>
+                <th>Total Amount(Rs)</th>
+                <th>Phone</th>
+                <th>Issued By</th>
+            </tr>
+        </thead>
+        <tbody id="transactionTableBody">
+            {% for combined_transaction in combined_transactions %}
+            {% for transaction in combined_transaction.transactions %}
+            <tr>
+                {% if loop.index == 1 %}
+                <td rowspan="{{ combined_transaction.transactions|length }}">{{ combined_transaction.customer_name }}</td>
+                <td rowspan="{{ combined_transaction.transactions|length }}">{{ combined_transaction.datestamp }}</td>
+                {% endif %}
+                <td>{{ transaction.name }}</td>
+                {% if loop.index == 1 %}
+                <td rowspan="{{ combined_transaction.transactions|length }}">{{ combined_transaction.total_amount }}</td>
+                <td rowspan="{{ combined_transaction.transactions|length }}">{{ combined_transaction.transactions[0].phone_no }}</td>
+                <td rowspan="{{ combined_transaction.transactions|length }}">{{ combined_transaction.transactions[0].issued_by }}</td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        // Function to filter transactions by customer name
+        function searchCustomer() {
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("customerSearch");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("transactionTableBody");
+            tr = table.getElementsByTagName("tr");
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[0];
+                if (td) {
+                    // Check if the customer name spans multiple rows
+                    if (td.rowSpan > 1) {
+                        // Iterate through rows to find the customer name
+                        var found = false;
+                        for (var j = i; j < i + td.rowSpan; j++) {
+                            var customerCell = table.getElementsByTagName("tr")[j].getElementsByTagName("td")[0];
+                            if (customerCell.textContent.toUpperCase().indexOf(filter) > -1) {
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (found) {
+                            tr[i].style.display = "";
+                        } else {
+                            tr[i].style.display = "none";
+                        }
+                    } else {
+                        txtValue = td.textContent || td.innerText;
+                        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                            tr[i].style.display = "";
+                        } else {
+                            tr[i].style.display = "none";
+                        }
+                    }
+                }
+            }
+        }
+
+
+        // Function to filter transactions by medicine name
+        function searchMedicine() {
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("medicineSearch");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("transactionTableBody");
+            tr = table.getElementsByTagName("tr");
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[2];
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>

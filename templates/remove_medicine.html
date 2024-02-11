@@ -28,6 +28,7 @@
                             <!-- Replace the URLs with the appropriate URLs for the remove actions -->
                             <a href="{{ url_for('update_medicine_quantity_route', action='option1') }}">Update Pills</a>
                             <a href="{{ url_for('add_medicine', action='option2') }}">Add New </a>
+                            <a href="{{ url_for('transaction_history', action='option3') }}">Transactions </a>
 
                             <!-- Add more options as needed -->
                         </div>
@@ -76,7 +77,7 @@
         {% if message1 %}
         <p>{{ message1 }}</p>
         {% endif %}
-        <h3>Remove Medicine</h3>
+        <h5>Remove Medicine</h5>
         <form method="post" action="/remove_medicine">
             {% if medicines %}
             <table>
@@ -99,13 +100,13 @@
                 </tr>
                 {% endfor %}
             </table>
-            <input type="submit" value="Remove Selected Medicines">
+            <input type="submit" value="Remove Medicines">
             {% else %}
             <p>No medicines in the inventory.</p>
             {% endif %}
         </form>
 
-        <h3>Remove history</h3>
+        <h5>Remove history</h5>
         <form method="post" action="/remove_sales_history">
             {% if history %}
             <table>

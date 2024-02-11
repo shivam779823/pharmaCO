@@ -97,6 +97,14 @@ h4 {
     
 }
 
+h5 {
+    text-align: center ; 
+    font-size: 50px;  
+    font-size: xx-large;
+    font-family: 'Courier New', Courier, monospace;
+
+}
+
 .box{
     display: inline-block; 
     color: rgb(0, 0, 0);
@@ -112,18 +120,18 @@ h4 {
     border-collapse: collapse;
     width: 50%;
     margin: 20px auto; 
-    background: #ded8d8;
-    border-color: #000000;
+    background: whitesmoke;
+    border-color: #ffffff;
 }
 
 .items_in_stocks th ,td{
-    border: 1px solid #000000;
+    /* border: 1px solid #f7f5f5; */
     text-align: left;
     padding: 8px;
 }
 
 .items_in_stocks th {
-    background-color: #045b23;
+    background-color: #09a6c5;
     color: white;
 }
 
@@ -141,7 +149,7 @@ h4 {
 }
 
 .expired th {
-    background-color: #7e0a0a;
+    background-color: #e10e0e;
     color: white;
 }
 
@@ -194,7 +202,7 @@ h4 {
 
 .name{
     text-align: center;
-    background-color: #368ec4;
+    background-color: #c0e7c0;
 
 }
 
@@ -321,10 +329,10 @@ h4 {
     width: 45%; /* Adjust the width as needed */
     display: inline-block;
     margin: 10px;
-    border: 1px solid #368ec4;
+    border: 1px solid #ffffff;
     padding: 10px;
     border-width: 2px;
-    background-color: #ede9e9;
+    background-color: white;
 }
 /* 
 table {
