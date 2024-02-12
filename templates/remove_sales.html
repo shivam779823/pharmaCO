@@ -34,6 +34,7 @@
     {% endif %}
 
 <h5>Remove history</h5>
+
 <form method="post" action="/remove_sales_history">
     {% if medicines %}
     <table>
@@ -57,10 +58,8 @@
             <td>{{ medicine.quantity_sold }}</td>
             <td>{{ medicine.total_amount }}</td>
             <td>{{ medicine.datestamp }}</td>
-           
             <td>{{ medicine.phone_no }}</td>
             <td>{{ medicine.issued_by }}</td>
-
         </tr>
         {% endfor %}
     </table>
@@ -69,6 +68,7 @@
     <p>No history.</p>
     {% endif %}
 </form>
+
 
 
 

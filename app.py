@@ -519,7 +519,7 @@ def register():
         password = request.form['password']
 
         result = pharmacy.register_user(username, password)
-        return render_template('register.html', result=result ,message='New User Register Sucessfully!!')
+        return render_template('register.html', result=result ,message=f'{username} User Register Sucessfully!!')
 
     return render_template('register.html')
 
@@ -578,15 +578,16 @@ def home():
 @app.route('/remove_user', methods=['GET', 'POST'])  
 @login_required
 def remove_user():
-    message=None
-    users = pharmacy.get_users()
+    message = None
     if request.method == 'POST':
-        selected_user = request.form.getlist('user_checkbox')
-
-        for username in selected_user:
-            pharmacy.remove_user(username)
-        message=f"{username} Removed Successfully! "
-    return render_template('remove_user.html',users=users,message=message)
+        user_ids = request.form.getlist('user_ids')  # Get list of selected user IDs
+        for user_id in user_ids:
+            pharmacy.remove_user(user_id)  # Assuming pharmacy.remove_user removes user based on user ID
+        message = f"{len(user_ids)} users removed successfully!"
+        request_latency = time.time() - request.start_time
+        ROUTE_LATENCY.labels(request.path).observe(request_latency)
+    users = pharmacy.get_users()  # Assuming pharmacy.get_users() returns updated user list
+    return render_template('remove_user.html', message=message, users=users)
 
 
 #add_medicine
@@ -675,18 +676,14 @@ def remove_medicine():
 @login_required
 def remove_sales_history():
     message1 = None
-    history = None  # Add this line to initialize the history variable
     if request.method == 'POST':
-        id = request.form['id']
-        # customer_name = request.form['customer_name']
-        pharmacy.remove_transaction_details(id)
-        # pharmacy.remove_customer_info(customer_name)
-        message1 = f"History for ID '{id}' removed successfully!"
+        ids = request.form.getlist('ids')  # Get list of selected IDs
+        for id in ids:
+            pharmacy.remove_transaction_details(id)
+        message1 = f"{len(ids)} history records removed successfully!"
         request_latency = time.time() - request.start_time
         ROUTE_LATENCY.labels(request.path).observe(request_latency)
-    # Fetch updated sales history after removal
-    # sales_history = pharmacy.get_sales()
-    x=pharmacy.get_transaction_details()
+    x = pharmacy.get_transaction_details()
     return render_template('remove_sales.html', message1=message1, medicines=x)
 
 

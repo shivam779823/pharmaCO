@@ -20,25 +20,26 @@
 
     <h2>Remove Users</h2>
     
-    <form method="post" action="/remove_user">
-        <table>
-            <tr>
-                <th>Select</th>
-                <th>Id</th>
-                <th>Username</th>
-                <!-- Add more user details as needed -->
-            </tr>
-            {% for x in users %}
-            <tr>
-                <td><input type="checkbox" name="user_checkbox" value="{{ x[0] }}"></td>
-                <td>{{ x[0] }}</td>
-                <td>{{ x[1] }}</td>
-                <!-- Add more user details as needed -->
-            </tr>
-            {% endfor %}
-        </table>
-        <input type="submit" value="Remove Selected Users">
-    </form>
+   <form method="post" action="/remove_user">
+    <table>
+        <tr>
+            <th>Select</th>
+            <th>ID</th>
+            <th>Username</th>
+            <!-- Add more user details as needed -->
+        </tr>
+        {% for user in users %}
+        <tr>
+            <td><input type="checkbox" name="user_ids" value="{{ user[0] }}"></td>
+            <td>{{ user[0] }}</td>
+            <td>{{ user[1] }}</td>
+            <!-- Add more user details as needed -->
+        </tr>
+        {% endfor %}
+    </table>
+    <input type="submit" value="Remove Selected Users">
+</form>
+
 
     {% if message %}
     <p>{{ message }}</p>
