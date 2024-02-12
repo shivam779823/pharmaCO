@@ -1,13 +1,15 @@
 # PharmaCO - Pharmacy Management System
 
+Pharmaco is a modern and intuitive Pharmacy Management System built using Flask. It provides a comprehensive solution for managing pharmacy operations such as inventory management, sales tracking, user authentication, and generating reports.
 
+## UI
 ![image](https://github.com/shivam779823/pharmaCO/assets/105196334/2c56cce2-9d8c-44a8-83db-0ee82448ebb2)
 
-## Login Page
+##3 Login Page
 ![image](https://github.com/shivam779823/pharmaCO/assets/105196334/780ecd50-2ba9-4a5f-921f-c09e696f70f7)
 
-
-Pharmaco is a modern and intuitive Pharmacy Management System built using Flask. It provides a comprehensive solution for managing pharmacy operations such as inventory management, sales tracking, user authentication, and generating reports.
+### Dashboard's 
+![image](https://github.com/shivam779823/pharmaCO/assets/105196334/a729ac62-4ee8-4e5c-9c03-4de46b8f2f9b)
 
 ---
 
