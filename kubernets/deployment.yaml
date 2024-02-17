@@ -51,7 +51,7 @@ spec:
         - name: MYSQL_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: pharmaco-config-db
+              name: pharmaco-config
               key: MYSQL_PASSWORD
               
 ---
