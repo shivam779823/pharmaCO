@@ -71,7 +71,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      #STEP 4 Build and Push
+      #STEP 4 Build 
       - name: Image Build
         run: |
           docker build -t ${{env.DOCKERHUB_USERNAME}}/${{env.IMAGE}}:v1.${{github.run_number}} .

@@ -9,7 +9,6 @@ on:
       - develop
       - 'feature/*'
       - 'hotfix/*'
-      
   pull_request:
     branches: 
       - main
