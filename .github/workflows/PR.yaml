@@ -2,7 +2,7 @@
 # MAINTAINED BY: SHIVAM
 #################################################
 
-name: CI Pipeline - PR
+name: CI PR
 on:
   pull_request:  
     branches: 

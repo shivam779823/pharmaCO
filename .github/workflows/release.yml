@@ -8,8 +8,8 @@ on:
     branches: 
       - main
     paths-ignore: 
-      - .github
-      -  README.md
+      - .github/*
+      - ./README.md
 env:     
   IMAGE: pharmaco
   DOCKERHUB_USERNAME: shiva9921 

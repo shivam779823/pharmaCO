@@ -2,7 +2,7 @@
 # MAINTAINED BY: SHIVAM
 #################################################
 
-name: CI Pipeline 
+name: CI UAT
 on:
   push:
     branches: 
