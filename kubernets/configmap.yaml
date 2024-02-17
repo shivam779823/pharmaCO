@@ -4,6 +4,4 @@ metadata:
   name: pharmaco-config-db
 data:
   MYSQL_HOST : "mysql-service" 
-  MYSQL_USER : "test"
-  MYSQL_PASSWORD: "12345678"
   MYSQL_DB: "test"

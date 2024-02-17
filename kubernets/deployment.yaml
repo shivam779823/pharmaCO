@@ -15,8 +15,22 @@ spec:
       containers:
       - name: pharmaco
         image: shiva9921/pharmaco:v1.23
+        imagePullPolicy: Always
+        restartPolicy: Always
         ports:
         - containerPort: 8080
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 20
         env:
         - name: MYSQL_HOST
           valueFrom:
@@ -31,13 +45,13 @@ spec:
  
         - name: MYSQL_USER
           valueFrom:
-            configMapKeyRef:
-              name: pharmaco-config-db        
-              key: MYSQL_USER
-
+            secretKeyRef:
+              name: pharmaco-secret
+              key:  MYSQL_USER
+              
         - name: MYSQL_PASSWORD
           valueFrom:
-            configMapKeyRef:
+            secretKeyRef:
               name: pharmaco-config-db
               key: MYSQL_PASSWORD
               
