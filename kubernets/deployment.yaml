@@ -16,7 +16,6 @@ spec:
       - name: pharmaco
         image: shiva9921/pharmaco:v1.23
         imagePullPolicy: Always
-        restartPolicy: Always
         ports:
         - containerPort: 8080
         readinessProbe:
