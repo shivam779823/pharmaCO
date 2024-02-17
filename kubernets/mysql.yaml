@@ -49,23 +49,13 @@ spec:
       containers:
       - name: mysql
         image: mysql:latest
-        #env:
-        # - name: MYSQL_ROOT_PASSWORD
-        #   value: "12345678"
-        # - name: MYSQL_DATABASE
-        #   value: "test"
-        # - name: MYSQL_USER
-        #   value: "test"
-        # - name: MYSQL_PASSWORD
-        #   value: "12345678"
-        
         ports:
         - containerPort: 3306
         env:
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: pharmaco-config-db
+              name: pharmaco-secret
               key: MYSQL_ROOT_PASSWORD
 
         - name: MYSQL_DATABASE
@@ -83,7 +73,7 @@ spec:
         - name: MYSQL_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: pharmaco-config-db
+              name: pharmaco-secret
               key: MYSQL_PASSWORD
               
         volumeMounts:
