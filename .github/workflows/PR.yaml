@@ -53,8 +53,12 @@ jobs:
         id: parse_pylint
         run: |
           rating=$(tail -n 2 pylint_results.json | cut -d ":" -f 2 | cut -d "/" -f1 | cut -d "." -d ":" -f 2 | cut -d "/" -f1 | cut -d "." -f1)
+          SUMMARY="# Code Quality Gate\n## Scanning summary\n Gate : ${rating} Pass✅"
+          echo "$SUMMARY" >> $GITHUB_STEP_SUMMARY"
           if (( $(echo "$rating < 7" ) )); then
-            echo "Pylint rating is less than 7.00. Exiting pipeline." >> $GITHUB_STEP_SUMMARY
+            echo "Pylint rating is less than 7.00. Exiting pipeline."
+            SUMMARY="# Code Quality Gate\n## Scanning summary\n Gate : ${rating} Failed ❌"
+            echo "$SUMMARY" >> $GITHUB_STEP_SUMMARY"
             exit 1
           fi
 
