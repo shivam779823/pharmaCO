@@ -37,25 +37,26 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: install dependencies
+
+      - name: Code Quality(pylint)
         run: |
           pip install pylint
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi  
-
-      - name: Linting
-        run: |
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
           pylint --output-format=json *.py > pylint_results.json || true
+          pylint *.py | tail -n 2 >> rating.txt
           pylint *.py | tail -n 2 >> pylint_results.json
      
       - name: Code Quality Gate Check
         id: parse_pylint
         run: |
-          rating=$(tail -n 2 pylint_results.json | cut -d ":" -f 2 | cut -d "/" -f1 | cut -d "." -d ":" -f 2 | cut -d "/" -f1 | cut -d "." -f1)
-          if (( $(echo "$rating < 7" ) )); then
-            echo "Pylint rating is less than 7.00. Exiting pipeline." 
+          rating=$(tail -n 2 rating.txt | cut -d ":" -f 2 | cut -d "/" -f1 | cut -d "." -d ":" -f 2 | cut -d "/" -f1 | cut -d "." -f1)
+          if (( $(echo "$rating >= 7" ) )); then
+            echo -e "# Code Quality Gate🚀 \n ## Scanning summary\n Code Rating : ${rating}  Gate : Pass✅" >> $GITHUB_STEP_SUMMARY
+          else
+            echo -e "# Code Quality Gate\n ## Scanning summary\n Code Rating : ${rating}  Gate : Failed ❌" >> $GITHUB_STEP_SUMMARY
+            echo "Pylint rating is less than 7.00. Exiting pipeline."
             exit 1
           fi
-
       - name: Upload Pylint results
         uses: actions/upload-artifact@v2
         if: always()
@@ -74,6 +75,8 @@ jobs:
       - name: Image Build
         run: |
           docker build -t ${{env.DOCKERHUB_USERNAME}}/${{env.IMAGE}}:v1.${{github.run_number}} .
+          echo -e "# Image Build 👨‍🔧\n ## Version summary\n Image version : pharmaco:v1.${{github.run_number}}"  >> $GITHUB_STEP_SUMMARY
+
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
