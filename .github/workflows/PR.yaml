@@ -58,9 +58,9 @@ jobs:
             echo "Pylint rating is less than 7.00. Exiting pipeline."
             exit 1
           else
-          echo "## Quality Gate result::Code quality gate Pass. $rating"  >> $GITHUB_STEP_SUMMARY
+          echo "# Code Quality Gate\n## Scanning summary\n Gate : ${rating} Pass✅" >> $GITHUB_STEP_SUMMARY
           fi
-          
+        
 
       - name: Upload Pylint results
         uses: actions/upload-artifact@v2
@@ -86,10 +86,17 @@ jobs:
           image-ref: '${{env.DOCKERHUB_USERNAME}}/${{env.IMAGE}}:v1.${{github.run_number}}'
           format: 'sarif'
           output: 'trivy-results.sarif'
+
       
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: 'trivy-results.sarif'
+
+      - name: job summary
+        run: 
+          ls
+          pwd
+          cat trivy-results.sarif >> $GITHUB_STEP_SUMMARY
 
     
