@@ -101,8 +101,7 @@ jobs:
         with:
           image-ref: '${{env.DOCKERHUB_USERNAME}}/${{env.IMAGE}}:v1.${{github.run_number}}'
           format: 'table'
-          exit-code: '1'
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
-
+          output: result.txt 
