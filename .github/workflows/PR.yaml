@@ -58,7 +58,7 @@ jobs:
             echo "Pylint rating is less than 7.00. Exiting pipeline."
             exit 1
           else
-          echo "# Code Quality Gate\n## Scanning summary\n Gate : ${rating} Pass✅" >> $GITHUB_STEP_SUMMARY
+          echo "# Code Quality Gate\n ## Scanning summary\n Gate : ${rating} Pass✅" >> $GITHUB_STEP_SUMMARY
           fi
         
 
@@ -94,7 +94,7 @@ jobs:
           sarif_file: 'trivy-results.sarif'
 
       - name: job summary
-        run: 
+        run: |
           ls
           pwd
           cat trivy-results.sarif >> $GITHUB_STEP_SUMMARY
