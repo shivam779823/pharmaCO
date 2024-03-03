@@ -54,9 +54,13 @@ jobs:
         run: |
           rating=$(tail -n 2 pylint_results.json | cut -d ":" -f 2 | cut -d "/" -f1 | cut -d "." -d ":" -f 2 | cut -d "/" -f1 | cut -d "." -f1)
           if (( $(echo "$rating < 7" ) )); then
+            echo "## Quality Gate result::Code quality gate failed. $rating"  >> $GITHUB_STEP_SUMMARY
             echo "Pylint rating is less than 7.00. Exiting pipeline."
             exit 1
+          else
+          echo "## Quality Gate result::Code quality gate Pass. $rating"  >> $GITHUB_STEP_SUMMARY
           fi
+          
 
       - name: Upload Pylint results
         uses: actions/upload-artifact@v2
@@ -87,3 +91,5 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: 'trivy-results.sarif'
+
+    
