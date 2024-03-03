@@ -110,4 +110,3 @@ jobs:
         run: |
           ls
           cat result.txt  >> $GITHUB_STEP_SUMMARY
-
