@@ -105,3 +105,9 @@ jobs:
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
           output: result.txt 
+
+      - name: scan summary
+        run: |
+          ls
+          cat result.txt  >> $GITHUB_STEP_SUMMARY
+
