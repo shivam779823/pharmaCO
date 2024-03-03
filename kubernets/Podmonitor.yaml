@@ -1,0 +1,16 @@
+apiVersion: monitoring.googleapis.com/v1
+kind: PodMonitoring
+metadata:
+  namespace: gmp-system
+  name: collector
+  labels:
+    app.kubernetes.io/name: collector
+    app.kubernetes.io/part-of: google-cloud-managed-prometheus
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: collector
+  endpoints:
+  - port: prom-metrics
+    interval: 10s
+    path: /metrics

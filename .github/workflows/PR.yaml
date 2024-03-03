@@ -13,7 +13,7 @@ on:
       - fix/*
 
     paths-ignore: 
-      - '.github/**'
+      # - '.github/**'
       - 'README.md'
 env:     
   IMAGE: pharmaco
@@ -53,7 +53,7 @@ jobs:
         run: |
           rating=$(tail -n 2 pylint_results.json | cut -d ":" -f 2 | cut -d "/" -f1 | cut -d "." -d ":" -f 2 | cut -d "/" -f1 | cut -d "." -f1)
           if (( $(echo "$rating < 7" ) )); then
-            echo "Pylint rating is less than 7.00. Exiting pipeline."
+            echo "Pylint rating is less than 7.00. Exiting pipeline." >> $GITHUB_STEP_SUMMARY
             exit 1
           fi
 
