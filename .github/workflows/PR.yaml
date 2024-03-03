@@ -80,7 +80,7 @@ jobs:
       - name: Image Build
         run: |
           docker build -t ${{env.DOCKERHUB_USERNAME}}/${{env.IMAGE}}:v1.${{github.run_number}} .
-          echo -e "# Image Build👨‍🔧\n ## Version summary\n Image version : pharmaco:v1.$github.run_number  >> $GITHUB_STEP_SUMMARY
+          echo -e "# Image Build👨‍🔧\n ## Version summary\n Image version : pharmaco:v1.$github.run_number"  >> $GITHUB_STEP_SUMMARY
 
 
       - name: Run Trivy vulnerability scanner
