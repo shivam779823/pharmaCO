@@ -3,10 +3,6 @@
 #  Maintainer : SHIVAM 
 #*****************************************
 
-csksbvlsvbslv
-python -m 33553566
-print("passwoe").
-
 #Imports
 from flask import Flask, render_template, request, redirect, url_for , session ,send_file ,jsonify
 import hashlib
