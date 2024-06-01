@@ -19,6 +19,7 @@ on:
 env:     
   IMAGE: pharmaco
   DOCKERHUB_USERNAME: shiva9921 
+  Turn_off_gate: true
 
 jobs:
   build:
