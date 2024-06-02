@@ -7,7 +7,40 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <style>
+        #chatbot {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #f1f6f5;
+            border: 8px solid #eff2f3;
+            border-radius: 1px;
+            padding: 2px;
+            width: 200x;
+            text-align: center; /* Center align content */
+        }
+      
+    
+#chat-route-button {
+    margin-top: 0px; /* Add margin to separate from the heading */
+    background-color: #cc1111; /* Button background color */
+    color: white; /* Button text color */
+    border: none; /* Remove button border */
+    padding: 5px 10px; /* Padding for the button */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Show pointer cursor on hover */
+}
+
+#chat-route-button:hover {
+    background-color: #05b38d; /* Darker background color on hover */
+}
+    </style>
+
+
+
 </head>
+
+
 
 <body>
 
@@ -67,7 +100,16 @@
             </nav>
         </div>
        <!-- Update the button's onclick attribute to call the correct function -->
-
+       <div id="chatbot">
+        <h2>PharmaCO GPT</h2>
+        <button id="chat-route-button" onclick="redirectToChat()">Open Chat</button>
+    </div>
+    
+    <script>
+        function redirectToChat() {
+            window.location.href = "/chat";
+        }
+    </script>
 
 
         <div id="boxa">

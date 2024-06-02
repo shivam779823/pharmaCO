@@ -549,6 +549,12 @@ def metrics():
 ######################### METRICS ################################################
 
 
+@app.route('/chat')  
+@login_required
+def chat():
+    return render_template('chat.html')
+
+
 #HOME
 
 @app.route('/')  
