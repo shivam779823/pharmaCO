@@ -80,14 +80,18 @@ jobs:
       #STEP 4 Build 
       - name: Image Build
         run: |
-          docker build -t ${{env.DOCKERHUB_USERNAME}}/${{env.IMAGE}}:v1.${{github.run_number}} .
-          echo -e "# Image Build👨‍🔧\n ## Version summary\n Image version : pharmaco:v1.${{github.run_number}}"  >> $GITHUB_STEP_SUMMARY
+          docker build -t ${{env.DOCKERHUB_USERNAME}}/${{env.IMAGE}}:v1.${{github.sha }} .
+          echo -e "# Image Build👨‍🔧\n ## Version summary\n Image version : pharmaco:v1.${{github.sha}}"  >> $GITHUB_STEP_SUMMARY
 
+       #STEP 6 Push
+      - name: Image push
+        run: |
+          docker push ${{env.DOCKERHUB_USERNAME}}/${{env.IMAGE}}:v1.${{github.sha}} 
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: '${{env.DOCKERHUB_USERNAME}}/${{env.IMAGE}}:v1.${{github.run_number}}'
+          image-ref: '${{env.DOCKERHUB_USERNAME}}/${{env.IMAGE}}:v1.${{github.sha}}'
           format: 'sarif'
           output: 'trivy-results.sarif' 
 
@@ -100,7 +104,7 @@ jobs:
       - name: Run Trivy scan summary
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: '${{env.DOCKERHUB_USERNAME}}/${{env.IMAGE}}:v1.${{github.run_number}}'
+          image-ref: '${{env.DOCKERHUB_USERNAME}}/${{env.IMAGE}}:v1.${{github.sha}}'
           format: 'table'
           ignore-unfixed: true
           vuln-type: 'os,library'

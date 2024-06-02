@@ -11,7 +11,7 @@ on:
       - 'hotfix/*'
   pull_request:
     branches: 
-      - main
+      - uat
   workflow_dispatch:
 
     
