@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: pharmaco
-        image: shiva9921/pharmaco:v1.d914dc13016109219a7651ee21a47b7a925bcfbe #shiva9921/pharmaco:v1.23
+        image: shiva9921/pharmaco:v1.30 #shiva9921/pharmaco:v1.23
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
