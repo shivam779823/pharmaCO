@@ -68,6 +68,8 @@ ROUTE_LATENCY = Histogram(
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
+CHATBOT_API_URL = "http://pharmaco-chatbot-service:81/api/get_response" 
+
 
 
 # Middleware to capture metrics for each request
@@ -553,6 +555,17 @@ def metrics():
 @login_required
 def chat():
     return render_template('chat.html')
+
+@app.route("/ask_bot", methods=["POST"])
+def ask_bot():
+    user_message = request.json.get("message")
+    if not user_message:
+        return jsonify(response="Please provide a message.")
+    
+    response = requests.post(CHATBOT_API_URL, json={"message": user_message})
+    bot_response = response.json().get("response")
+    return jsonify(response=bot_response)
+
 
 
 #HOME
