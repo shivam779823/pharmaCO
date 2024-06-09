@@ -556,16 +556,28 @@ def metrics():
 def chat():
     return render_template('chat.html')
 
+# @app.route("/ask_bot", methods=["POST"])
+# def ask_bot():
+#     user_message = request.json.get("message")
+#     if not user_message:
+#         return jsonify(response="Please provide a message.")
+    
+#     response = requests.post(CHATBOT_API_URL, json={"message": user_message})
+#     bot_response = response.json().get("response")
+#     return jsonify(response=bot_response)
+
+
+
 @app.route("/ask_bot", methods=["POST"])
 def ask_bot():
-    user_message = request.json.get("message")
+    user_message = request.form.get("message")
     if not user_message:
         return jsonify(response="Please provide a message.")
-    
-    response = requests.post(CHATBOT_API_URL, json={"message": user_message})
+
+    # Send user message to the bot
+    response = requests.post(CHATBOT_API_URL, data={"message": user_message})
     bot_response = response.json().get("response")
     return jsonify(response=bot_response)
-
 
 
 #HOME
