@@ -27,7 +27,7 @@ MYSQL_HOST = os.environ.get("MYSQL_HOST", "localhost")
 MYSQL_USER = os.environ.get("MYSQL_USER", "test")
 MYSQL_PASSWORD = os.environ.get("MYSQL_PASSWORD", "12345678")
 MYSQL_DB = os.environ.get("MYSQL_DB", "pharmaco")
-
+CHATBOT_URL = os.environ.get("CHATBOT_URL", "http://pharmaco-chatbot-service:81/api/get_response" )
 # MySQL connection pooling
 db_config = {
     "host": MYSQL_HOST,
@@ -68,7 +68,7 @@ ROUTE_LATENCY = Histogram(
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
-CHATBOT_API_URL = "http://pharmaco-chatbot-service:81/api/get_response" 
+CHATBOT_API_URL = CHATBOT_URL
 
 
 

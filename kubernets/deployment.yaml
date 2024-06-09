@@ -41,6 +41,12 @@ spec:
             configMapKeyRef:
               name: pharmaco-config-db        
               key: MYSQL_DB 
+
+        - name: CHATBOT_URL
+          valueFrom:
+            configMapKeyRef:
+              name: pharmaco-config-db        
+              key: CHATBOT_URL
  
         - name: MYSQL_USER
           valueFrom:
