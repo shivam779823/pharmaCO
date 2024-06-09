@@ -17,7 +17,7 @@ on:
       - '.github/**'
       - 'README.md'
 env:     
-  IMAGE: pharmaco
+  IMAGE: pharmaco-temp
   DOCKERHUB_USERNAME: shiva9921 
   Turn_off_gate: true
 
@@ -82,7 +82,11 @@ jobs:
         run: |
           docker build -t ${{env.DOCKERHUB_USERNAME}}/${{env.IMAGE}}:v1.${{github.run_number}} .
           echo -e "# Image Build👨‍🔧\n ## Version summary\n Image version : pharmaco:v1.${{github.run_number}}"  >> $GITHUB_STEP_SUMMARY
-
+  
+      #STEP 6 Push
+      - name: Image push
+        run: |
+          docker push ${{env.DOCKERHUB_USERNAME}}/${{env.IMAGE}}:v1.${{github.run_number}} 
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
