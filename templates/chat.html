@@ -14,49 +14,10 @@
         <div class="chat-box" id="chat-box">
             <!-- Chat messages will appear here -->
         </div>
-        <form id="chat-form">
+        <form id="chat-form" method="POST" action="/ask_bot">
             <input type="text" id="message" name="message" placeholder="Type your message..." required>
             <button type="submit">Send</button>
         </form>
     </div>
-
-    <script>
-        const form = document.getElementById('chat-form');
-        const chatBox = document.getElementById('chat-box');
-
-        form.addEventListener('submit', async (event) => {
-            event.preventDefault();
-            const userMessage = document.getElementById('message').value;
-            if (userMessage.trim() === "") return;
-
-            // Display user message
-            const userMessageElement = document.createElement('div');
-            userMessageElement.className = 'message user-message';
-            userMessageElement.textContent = userMessage;
-            chatBox.appendChild(userMessageElement);
-
-            // Clear the input field
-            document.getElementById('message').value = '';
-
-            // Send user message to the bot
-            const response = await fetch('/ask_bot', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ 'message': userMessage })
-            });
-            const data = await response.json();
-
-            // Display bot response
-            const botMessageElement = document.createElement('div');
-            botMessageElement.className = 'message bot-message';
-            botMessageElement.textContent = data.response;
-            chatBox.appendChild(botMessageElement);
-
-            // Scroll to the bottom of the chat box
-            chatBox.scrollTop = chatBox.scrollHeight;
-        });
-    </script>
 </body>
 </html>
