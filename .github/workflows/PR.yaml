@@ -46,12 +46,14 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi  
 
       - name: Linting
+        if: env.Turn_off_gate != 'true'
         run: |
           pylint --output-format=json *.py > pylint_results.json || true
           pylint *.py | tail -n 2 >> pylint_results.json
           pylint *.py | tail -n 2 >> rating.txt
 
       - name: Code Quality Gate Check
+        if: env.Turn_off_gate != 'true'
         id: parse_pylint
         run: |
           rating=$(tail -n 2 rating.txt | cut -d ":" -f 2 | cut -d "/" -f1 | cut -d "." -d ":" -f 2 | cut -d "/" -f1 | cut -d "." -f1)
@@ -65,8 +67,9 @@ jobs:
         
 
       - name: Upload Pylint results
+        
         uses: actions/upload-artifact@v2
-        if: always()
+        if: always() &&  env.Turn_off_gate != 'true'
         with:
           name: pylint-results
           path: pylint_results.json
