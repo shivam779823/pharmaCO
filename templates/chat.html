@@ -16,16 +16,24 @@
                     url: '/ask_bot',
                     data: { message: message },
                     success: function(response) {
-                        $('#chat-box').append('<p>You: ' + message + '</p>');
-                        $('#chat-box').append('<p>Bot: ' + response.response + '</p>');
+                        appendUserMessage(message);
+                        appendBotMessage(response.response);
                         $('#message').val('');  // Clear input field
                     },
                     error: function(error) {
                         console.log(error);
-                        $('#chat-box').append('<p>Error communicating with chatbot: ' + error.responseJSON.response + '</p>');
+                        $('#chat-box').append('<p class="error">Error communicating with chatbot: ' + error.responseJSON.response + '</p>');
                     }
                 });
             });
+
+            function appendUserMessage(message) {
+                $('#chat-box').append('<div class="message user-message"><p>' + message + '</p></div>');
+            }
+
+            function appendBotMessage(message) {
+                $('#chat-box').append('<div class="message bot-message"><p>' + message + '</p></div>');
+            }
         });
     </script>
 </head>

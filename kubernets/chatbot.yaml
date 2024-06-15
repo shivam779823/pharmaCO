@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pharmaco-chatbot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pharmaco-chatbot
+  template:
+    metadata:
+      labels:
+        app: pharmaco-chatbot
+    spec:
+      containers:
+      - name: pharmaco-chatbot
+        image: shiva9921/pharmaco-chatbot:v1.1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        env:
+        - name: MYSQL_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: pharmaco-config-db         
+              key: MYSQL_HOST 
+        - name: MYSQL_DB
+          valueFrom:
+            configMapKeyRef:
+              name: pharmaco-config-db        
+              key: MYSQL_DB 
+ 
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: pharmaco-secret
+              key:  MYSQL_USER
+              
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: pharmaco-secret
+              key: MYSQL_PASSWORD
+              
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pharmaco-chatbot-service
+spec:
+  selector:
+    app: pharmaco-chatbot
+  ports:
+    - protocol: TCP
+      port: 81
+      targetPort: 8081
+  type: LoadBalancer
+  sessionAffinity: ClientIP  # Set session affinity to ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 10800  # Set the session timeout (optional)

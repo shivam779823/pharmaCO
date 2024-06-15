@@ -30,10 +30,10 @@ body {
 
 .message {
     padding: 10px;
-    border-radius: 20px;
+    border-radius: 10px;
     margin-bottom: 10px;
-    max-width: 70%;
-    word-wrap: break-word;
+    width: fit-content;
+    max-width: 80%;
 }
 
 .user-message {
@@ -74,4 +74,9 @@ button {
 
 button:hover {
     background-color: #0056b3;
+}
+
+.error {
+    color: red;
+    font-weight: bold;
 }
