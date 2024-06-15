@@ -553,6 +553,8 @@ def metrics():
 @app.route('/chat')  
 @login_required
 def chat():
+    request_latency = time.time() - request.start_time
+    ROUTE_LATENCY.labels(request.path).observe(request_latency)
     return render_template('chat.html')
 
 
@@ -568,6 +570,8 @@ def ask_bot():
         response = requests.post(CHATBOT_API_URL, json={"message": user_message}, headers=headers, timeout=5)
         response.raise_for_status()
         bot_response = response.json().get("response")
+        request_latency = time.time() - request.start_time
+        ROUTE_LATENCY.labels(request.path).observe(request_latency)
         return jsonify(response=bot_response)  # Return JSON response
     except requests.exceptions.RequestException as e:
         return jsonify(response=f"Error communicating with chatbot: {str(e)}")
