@@ -5,6 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pharmco Bot Interface</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='chatbot.css') }}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#chat-form').submit(function(event) {
+                event.preventDefault();
+                var message = $('#message').val();
+                $.ajax({
+                    type: 'POST',
+                    url: '/ask_bot',
+                    data: { message: message },
+                    success: function(response) {
+                        $('#chat-box').append('<p>You: ' + message + '</p>');
+                        $('#chat-box').append('<p>Bot: ' + response.response + '</p>');
+                        $('#message').val('');  // Clear input field
+                    },
+                    error: function(error) {
+                        console.log(error);
+                        $('#chat-box').append('<p>Error communicating with chatbot: ' + error.responseJSON.response + '</p>');
+                    }
+                });
+            });
+        });
+    </script>
 </head>
 <body>
     <div class="chat-container">

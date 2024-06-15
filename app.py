@@ -555,22 +555,22 @@ def metrics():
 def chat():
     return render_template('chat.html')
 
+
 @app.route("/ask_bot", methods=["POST"])
 def ask_bot():
     user_message = request.form.get("message")
     if not user_message:
         return jsonify(response="Please provide a message.")
-    
+
     try:
         # Send user message to the bot with correct content type
         headers = {'Content-Type': 'application/json'}
         response = requests.post(CHATBOT_API_URL, json={"message": user_message}, headers=headers, timeout=5)
         response.raise_for_status()
         bot_response = response.json().get("response")
+        return jsonify(response=bot_response)  # Return JSON response
     except requests.exceptions.RequestException as e:
         return jsonify(response=f"Error communicating with chatbot: {str(e)}")
-
-    return jsonify(response=bot_response)
 
 #HOME
 
