@@ -562,15 +562,15 @@ def ask_bot():
         return jsonify(response="Please provide a message.")
     
     try:
-        # Send user message to the bot
-        response = requests.post(CHATBOT_API_URL, data={"message": user_message}, timeout=5)
+        # Send user message to the bot with correct content type
+        headers = {'Content-Type': 'application/json'}
+        response = requests.post(CHATBOT_API_URL, json={"message": user_message}, headers=headers, timeout=5)
         response.raise_for_status()
         bot_response = response.json().get("response")
     except requests.exceptions.RequestException as e:
         return jsonify(response=f"Error communicating with chatbot: {str(e)}")
 
     return jsonify(response=bot_response)
-
 
 #HOME
 
