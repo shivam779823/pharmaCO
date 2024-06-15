@@ -40,8 +40,6 @@ db_config = {
 cnx_pool = pooling.MySQLConnectionPool(**db_config)
 
 
-
-
 # Define Prometheus metrics
 REQUEST_COUNTER = Counter(
     'http_request_total',
@@ -556,27 +554,20 @@ def metrics():
 def chat():
     return render_template('chat.html')
 
-# @app.route("/ask_bot", methods=["POST"])
-# def ask_bot():
-#     user_message = request.json.get("message")
-#     if not user_message:
-#         return jsonify(response="Please provide a message.")
-    
-#     response = requests.post(CHATBOT_API_URL, json={"message": user_message})
-#     bot_response = response.json().get("response")
-#     return jsonify(response=bot_response)
-
-
-
 @app.route("/ask_bot", methods=["POST"])
 def ask_bot():
     user_message = request.form.get("message")
     if not user_message:
         return jsonify(response="Please provide a message.")
+    
+    try:
+        # Send user message to the bot
+        response = requests.post(CHATBOT_API_URL, data={"message": user_message}, timeout=5)
+        response.raise_for_status()
+        bot_response = response.json().get("response")
+    except requests.exceptions.RequestException as e:
+        return jsonify(response=f"Error communicating with chatbot: {str(e)}")
 
-    # Send user message to the bot
-    response = requests.post(CHATBOT_API_URL, data={"message": user_message})
-    bot_response = response.json().get("response")
     return jsonify(response=bot_response)
 
 
