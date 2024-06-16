@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: pharmaco-chatbot
-        image: shiva9921/pharmaco-chatbot:v1.1
+        image: shiva9921/pharmaco-chatbot:v1.017
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
@@ -54,7 +54,7 @@ spec:
     - protocol: TCP
       port: 81
       targetPort: 8081
-  type: LoadBalancer
+  type: ClusterIP
   sessionAffinity: ClientIP  # Set session affinity to ClientIP
   sessionAffinityConfig:
     clientIP:
