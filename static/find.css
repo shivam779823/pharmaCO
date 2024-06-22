@@ -35,7 +35,7 @@ body {
 
 form {
     background-color: #fff;
-    padding: 10px;
+    padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     margin-bottom: 20px;
@@ -48,27 +48,26 @@ form div {
 }
 
 form label {
-    width: 150px;
+    width: 200px;
     font-weight: bold;
     margin-right: 10px;
 }
 
-form input[type="date"] {
-    padding: 8px;
+form input[type="text"],
+form input[type="submit"] {
+    padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
-    width: 25%;
+    font-size: 16px;
+    margin-left: 30px;
 }
 
 form input[type="submit"] {
     background-color: #4CAF50;
     color: white;
-    padding: 10px 20px;
     border: none;
-    border-radius: 4px;
     cursor: pointer;
-    font-size: 16px;
     transition: background-color 0.3s ease;
 }
 
@@ -76,42 +75,49 @@ form input[type="submit"]:hover {
     background-color: #45a049;
 }
 
-table {
+.medicine-table {
     width: 100%;
     border-collapse: collapse;
-    margin-bottom: 20px;
+    margin-top: 20px;
     background-color: #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
 }
 
-table th,
-table td {
+.medicine-table th,
+.medicine-table td {
     padding: 12px 16px;
     text-align: left;
     border-bottom: 1px solid #ddd;
 }
 
-table th {
+.medicine-table th {
     font-weight: bold;
     color: #333;
     background-color: #f8f9fa;
 }
 
-table tbody tr:nth-child(even) {
+.medicine-table tbody tr:nth-child(even) {
     background-color: #f8f9fa;
 }
 
-table tbody tr:hover {
+.medicine-table tbody tr:hover {
     background-color: #8f9193;
 }
 
-table tbody td:first-child {
+.medicine-table tbody td:first-child {
     border-left: 2px solid #dee2e6;
 }
 
-table tbody td:last-child {
+.medicine-table tbody td:last-child {
     border-right: 2px solid #dee2e6;
+}
+
+.no-medicine {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 18px;
+    color: #bc3901;
 }
 
 footer {

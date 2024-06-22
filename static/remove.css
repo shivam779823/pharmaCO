@@ -1,0 +1,223 @@
+/* add.css */
+
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+.header {
+    background-color: #4c9baf;
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+}
+
+.header h1 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+}
+
+.header h1 img {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+}
+
+.navbar {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    background-color: #4c9baf;
+    border-bottom: 2px solid #07a3ce;
+}
+
+.navbar li {
+    margin: 0 10px;
+}
+
+.navbar li a {
+    text-decoration: none;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+}
+
+.navbar li a:hover {
+    background-color: #0b3b76;
+}
+
+.dropdown {
+    position: relative;
+}
+
+.dropbtn {
+    background-color: #4c9baf;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    padding: 10px 20px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+}
+
+.dropbtn i {
+    margin-right: 5px;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #4c9baf;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    min-width: 160px;
+    border-radius: 5px;
+    overflow: hidden;
+    border: 1px solid #ccc;
+}
+
+.dropdown-content a {
+    color: #333;
+    padding: 10px;
+    text-decoration: none;
+    display: block;
+    border-bottom: 1px solid #ccc;
+}
+
+.dropdown-content a:last-child {
+    border-bottom: none;
+}
+
+.dropdown-content a:hover {
+    background-color: #113687;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.content {
+    max-width: 800px;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+}
+
+.content h2 {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.content h5 {
+    margin-top: 20px;
+    font-size: 18px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th,
+td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+th {
+    background-color: #f4f4f4;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.checkbox-container {
+    display: inline-block;
+    vertical-align: middle;
+    position: relative;
+    cursor: pointer;
+    user-select: none;
+}
+
+.checkbox-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.checkbox-custom {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 20px;
+    width: 20px;
+    background-color: #ccc;
+    border-radius: 3px;
+}
+
+.checkbox-container:hover input ~ .checkbox-custom {
+    background-color: #b3b3b3;
+}
+
+.checkbox-container input:checked ~ .checkbox-custom {
+    background-color: #4c9baf;
+}
+
+.checkbox-custom:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+.checkbox-container input:checked ~ .checkbox-custom:after {
+    display: block;
+}
+
+.checkbox-custom:after {
+    left: 7px;
+    top: 3px;
+    width: 5px;
+    height: 10px;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+input[type="submit"] {
+    background-color: #d9534f;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+}
+
+input[type="submit"]:hover {
+    background-color: #740704;
+}
+
+p {
+    text-align: center;
+    color: #d9534f;
+    font-size: 16px;
+}

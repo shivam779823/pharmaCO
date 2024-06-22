@@ -1,76 +1,80 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Pharmacy Management System</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='add.css') }}">
+    <title>PharmaCO - History</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='remove.css') }}">
 </head>
 <body>
-    <h1>PharmaCO</h1>
-
+  <header class="header">
+    <h1><img src="{{ url_for('static', filename='icon-pharmaco.png') }}" alt="PharmaCO Icon"> PharmaCO</h1>
     <nav>
         <ul class="navbar">
-          <li><a href="{{ url_for('home') }}"><i class="fa-solid fa-house-medical"></i> Home</a></li>
-          <li><a href="{{ url_for('display_inventory') }}"><i class="fa-solid fa-truck-medical"></i>Inventory</a></li>
-          <li>
-            <div class="dropdown">
-              <button class="dropbtn"><i class="fa-solid fa-trash"></i> Remove</button>
-              <div class="dropdown-content">
-                <!-- Replace the URLs with the appropriate URLs for the remove actions -->
-                <a href="{{ url_for('remove_medicine', action='option1') }}">Remove Medicine</a>
-                <a href="{{ url_for('remove_sales_history', action='option2') }}">Delete History</a>
-
-                <!-- Add more options as needed -->
-              </div>
-            </div>
-          </li>
-          <li><a href="{{ url_for('register') }}"><i class="fa-solid fa-user-doctor"></i> Register</a></li>
-
-          <li><a href="{{ url_for('logout') }}"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+            <li><a href="{{ url_for('home') }}"><i class="fa-solid fa-house-medical"></i> Home</a></li>
+            <li><a href="{{ url_for('display_inventory') }}"><i class="fa-solid fa-truck-medical"></i> Inventory</a></li>
+            <li class="dropdown">
+                <a href="#"><i class="fas fa-plus"></i> Add Medicine</a>
+                <div class="dropdown-content">
+                    <a href="{{ url_for('update_medicine_quantity_route', action='option1') }}">Update Pills</a>
+                    <a href="{{ url_for('add_medicine', action='option2') }}">Add New</a>
+                    <a href="{{ url_for('transaction_history', action='option3') }}">Transactions</a>
+                </div>
+            </li>
+            <li><a href="{{ url_for('generate_report') }}"><i class="fa-solid fa-book-medical"></i> Generate Report</a></li>
+            <li><a href="{{ url_for('find_medicine') }}"><i class="fa-solid fa-magnifying-glass"></i> Search</a></li>
+            <li><a href="{{ url_for('sell_medicine_route') }}"><i class="fa-solid fa-capsules"></i> Sell</a></li>
+            <li class="dropdown">
+                <a href="#"><i class="fa-solid fa-trash"></i> Remove</a>
+                <div class="dropdown-content">
+                    <a href="{{ url_for('remove_medicine', action='option1') }}">Medicine</a>
+                    <a href="{{ url_for('remove_sales_history', action='option2') }}">History</a>
+                    <a href="{{ url_for('remove_user', action='option3') }}">Users</a>
+                </div>
+            </li>
+            <li><a href="{{ url_for('register') }}"><i class="fa-solid fa-user-doctor"></i> Register</a></li>
+            <li><a href="{{ url_for('logout') }}"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
         </ul>
-      </nav>
+    </nav>
+</header>
 
     {% if message1 %}
     <p>{{ message1 }}</p>
     {% endif %}
 
-<h5>Remove history</h5>
+    <h5>Remove history</h5>
+    <form method="post" action="/remove_sales_history">
+        {% if medicines %}
+        <table>
+            <tr>
+                <th>Select</th>
+                <th>ID</th>
+                <th>Customer Name</th>
+                <th>Medicine Name</th>
+                <th>Quantity Sold</th>
+                <th>Total Amount(Rs)</th>
+                <th>Date</th>               
+                <th>Phone</th>
+                <th>Issued By</th>
+            </tr>
+            {% for medicine in medicines %}
+            <tr>
+                <td><input type="checkbox" name="id" value="{{ medicine.id }}"></td>
+                <td>{{ medicine.id }}</td>
+                <td>{{ medicine.customer_name }}</td>
+                <td>{{ medicine.name }}</td>
+                <td>{{ medicine.quantity_sold }}</td>
+                <td>{{ medicine.total_amount }}</td>
+                <td>{{ medicine.datestamp }}</td>
+               
+                <td>{{ medicine.phone_no }}</td>
+                <td>{{ medicine.issued_by }}</td>
 
-<form method="post" action="/remove_sales_history">
-    {% if medicines %}
-    <table>
-        <tr>
-            <th>Select</th>
-            <th>ID</th>
-            <th>Customer Name</th>
-            <th>Medicine Name</th>
-            <th>Quantity Sold</th>
-            <th>Total Amount(Rs)</th>
-            <th>Date</th>               
-            <th>Phone</th>
-            <th>Issued By</th>
-        </tr>
-        {% for medicine in medicines %}
-        <tr>
-            <td><input type="checkbox" name="ids" value="{{ medicine.id }}"></td>
-            <td>{{ medicine.id }}</td>
-            <td>{{ medicine.customer_name }}</td>
-            <td>{{ medicine.name }}</td>
-            <td>{{ medicine.quantity_sold }}</td>
-            <td>{{ medicine.total_amount }}</td>
-            <td>{{ medicine.datestamp }}</td>
-            <td>{{ medicine.phone_no }}</td>
-            <td>{{ medicine.issued_by }}</td>
-        </tr>
-        {% endfor %}
-    </table>
-    <input type="submit" value="Remove selected histories">
-    {% else %}
-    <p>No history.</p>
-    {% endif %}
-</form>
-
-
-
-
+            </tr>
+            {% endfor %}
+        </table>
+        <input type="submit" value="Remove Selected history">
+        {% else %}
+        <p>No history.</p>
+        {% endif %}
+    </form>
 </body>
 </html>

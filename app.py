@@ -599,7 +599,7 @@ def home():
     ROUTE_LATENCY.labels(request.path).observe(request_latency)
 
 
-    return render_template('index.html', medicines=all_medicines, expired_medicines=expired_medicines , recently=recently , outstocks=out_of_stock_medicines ,users=users,sell=recently_sold ,total_expired=total_expired ,OFS=total_out_stocks ,total_sold=total_sold)
+    return render_template('index.html', medicines=all_medicines, expired_medicines=expired_medicines , recently=recently , outstocks=out_of_stock_medicines ,users=users,sell=recently_sold ,total_expired=total_expired ,OFS=total_out_stocks ,total_sold=total_sold , transaction=recently_sold )
 
 
 @app.route('/remove_user', methods=['GET', 'POST'])  

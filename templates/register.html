@@ -1,42 +1,41 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PharmaCO - Register</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='login.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='register.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='icon-pharmaco.png') }}" type="image/x-icon">
 </head>
 <body>
-    <h1>PharmaCO - Register</h1>
+    <div class="header">
+        <h1><img src="{{ url_for('static', filename='icon-pharmaco.png') }}" alt="PharmaCO Icon"> PharmaCO</h1>
+    </div>
 
     <div class="form-container">
         <form method="post" action="/register">
-            <div>
+            <div class="form-group">
                 <label for="username">Username:</label>
-                <input type="text" name="username" required>
+                <input type="text" id="username" name="username" required>
             </div>
-            <div>
+            <div class="form-group">
                 <label for="password">Password:</label>
-                <input type="password" name="password" required>
-            </div>
-            <div>
-                <input type="submit" value="Register">
+                <input type="password" id="password" name="password" required>
             </div>
             <div class="button-container">
-                <!-- <input type="submit" value="Login"> -->
-                <a href="/login"><button type="button">Login</button></a>
+                <button type="submit" class="btn">Register</button>
+                <a href="/login" class="btn-alt">Login</a>
             </div>
-
             {% if message %}
-            <p>{{ message }}</p>
+            <p class="message">{{ message }}</p>
             {% endif %}
         </form>
     </div>
 
-    
-<div>
-    <h2></h2>
-</div>
+    <footer>
+        <div class="footer">
+            <p>&copy; 2023 SHIVAM MAHAJAN. All rights reserved.</p>
+        </div>
+    </footer>
 </body>
-<footer>
-    <p>&copy; 2023 SHIVAM MAHAJAN. All rights reserved.</p>
-</footer>
 </html>
