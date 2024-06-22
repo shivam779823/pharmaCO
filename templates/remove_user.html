@@ -27,14 +27,14 @@
                 <th>Username</th>
                 
             </tr>
-            {% for x in users %}
-            <tr>
-                <td><input type="checkbox" name="user_checkbox" value="{{ x[0] }}"></td>
-                <td>{{ x[0] }}</td>
-                <td>{{ x[1] }}</td>
-               
-            </tr>
-            {% endfor %}
+            {% for user in users %}
+        <tr>
+            <td><input type="checkbox" name="user_ids" value="{{ user[0] }}"></td>
+            <td>{{ user[0] }}</td>
+            <td>{{ user[1] }}</td>
+            <!-- Add more user details as needed -->
+        </tr>
+        {% endfor %}
         </table>
         <input type="submit" value="Remove Selected Users">
     </form>
