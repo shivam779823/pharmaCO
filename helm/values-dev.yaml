@@ -1,2 +1,41 @@
-appName: pharmaco
-Ns: default
+environment: dev
+pharmaco:
+  replicas: 1
+  image:
+    repository: shiva9921/pharmaco-temp
+    tag: v1.34
+    pullPolicy: IfNotPresent
+  service:
+    type: LoadBalancer
+    port: 80
+    targetPort: 8080
+
+mysql:
+  replicas: 1
+  image:
+    repository: mysql
+    tag: latest
+  host: "mysql-service"
+  db: "test"
+  user: "test"  
+  pv:
+    storage: "1Gi"
+    path: "/path/on/host"
+    
+chatbot:
+  replicas: 1
+  image:
+    repository: shiva9921/pharmaco-chatbot
+    tag: v1.021
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 81
+    targetPort: 8081
+
+chatbotEnv:
+  MYSQL_HOST: "mysql-service"
+  MYSQL_DB: "test"
+  MYSQL_USER: "test"
+  MYSQL_PASSWORD: "12345678"
+  CHATBOT_URL: "http://pharmaco-chatbot-service:81/api/get_response"
