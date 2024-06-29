@@ -5,7 +5,7 @@ Pharmaco is a modern and intuitive Pharmacy Management System built using Flask.
 
 [![CI Pipeline - release](https://github.com/shivam779823/pharmaCO/actions/workflows/release.yml/badge.svg?branch=main)](https://github.com/shivam779823/pharmaCO/actions/workflows/release.yml)
 
-[![CI Pipeline - PR ](https://github.com/shivam779823/pharmaCO/actions/workflows/release.yml/badge.svg?branch=main)](https://github.com/shivam779823/pharmaCO/actions/workflows/PR.yml)
+[![CI Pipeline - PR ](https://github.com/shivam779823/pharmaCO/actions/workflows/release.yml/badge.svg?branch=dev)](https://github.com/shivam779823/pharmaCO/actions/workflows/PR.yml)
 
 
 ![CI/PR Build Version](https://img.shields.io/badge/CI/PR%20Build-v1.${{github.run_number}}-blue)

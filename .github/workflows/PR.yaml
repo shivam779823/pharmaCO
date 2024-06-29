@@ -85,7 +85,7 @@ jobs:
       - name: Image Build
         run: |
           docker build -t ${{env.DOCKERHUB_USERNAME}}/${{env.IMAGE}}:v1.${{github.run_number}} .
-          echo -e "# Image Build👨‍🔧\n ## Version summary\n Image version : pharmaco:v1.${{github.run_number}}"  >> $GITHUB_STEP_SUMMARY
+          echo -e "# Image Build👨‍🔧\n ## Version summary\n Image version : pharmaco-temp:v1.${{github.run_number}}"  >> $GITHUB_STEP_SUMMARY
 
       - name: Image push
         if: env.IMAGE_PUSH != 'false'
@@ -106,6 +106,7 @@ jobs:
           sarif_file: 'trivy-results.sarif'
 
       - name: Run Trivy scan summary
+        id: trivy_scan
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: '${{env.DOCKERHUB_USERNAME}}/${{env.IMAGE}}:v1.${{github.run_number}}'
@@ -113,8 +114,9 @@ jobs:
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
-          output: result.txt 
+          # output: result.txt 
 
-      - name: scan summary
-        run: |
-          cat result.txt  >> $GITHUB_STEP_SUMMARY
+      - name: Display Trivy scan summary
+        run: echo "$TRIVY_SCAN_OUTPUT" >> $GITHUB_STEP_SUMMARY
+        env:
+          TRIVY_SCAN_OUTPUT: ${{ steps.trivy_scan.outputs.stdout }}
