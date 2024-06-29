@@ -7,7 +7,6 @@ Pharmaco is a modern and intuitive Pharmacy Management System built using Flask.
 
 ![CI/PR Build Version](https://img.shields.io/badge/CI/PR%20Build-v1.${{github.run_number}}-blue)
 
-
 [![CodeQL](https://github.com/MichaelCurrin/badge-generator/workflows/CodeQL/badge.svg)](https://github.com/MichaelCurrin/badge-generator/actions?query=workflow%3ACodeQL "Code quality workflow status")
 
 ## UI
@@ -16,8 +15,8 @@ Pharmaco is a modern and intuitive Pharmacy Management System built using Flask.
 ### Login Page
 ![image](https://github.com/shivam779823/pharmaCO/assets/105196334/780ecd50-2ba9-4a5f-921f-c09e696f70f7)
 
-### MetaBase 
-![image](https://github.com/shivam779823/pharmaCO/assets/105196334/a729ac62-4ee8-4e5c-9c03-4de46b8f2f9b)
+### Analytics by Metabase
+![Screenshot 2024-06-24 172846](https://github.com/shivam779823/pharmaCO/assets/105196334/031d52a2-7438-4f90-876b-0244c2ea8baa)
 
 ---
 
