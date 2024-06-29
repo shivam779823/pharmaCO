@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metabase-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: metabase
+  template:
+    metadata:
+      labels:
+        app: metabase
+    spec:
+      containers:
+      - name: metabase
+        image: metabase/metabase:latest
+        ports:
+        - containerPort: 3000
+        env:
+        - name: MB_DB_TYPE
+          value: "mysql"
+        - name: MB_DB_DBNAME
+          value: "test"
+        - name: MB_DB_PORT
+          value: "3306"
+        - name: MB_DB_USER
+          value: "test"
+        - name: MB_DB_PASS
+          value: "12345678"
+        - name: MB_DB_HOST
+          value: "mysql-service"  # Service name of your MySQL
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: metabase-service
+spec:
+  type: LoadBalancer  # Expose externally
+  ports:
+  - port: 80
+    targetPort: 3000
+  selector:
+    app: metabase

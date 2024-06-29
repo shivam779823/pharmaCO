@@ -208,7 +208,7 @@
                         <tr>
                             <td>{{ x.name }}</td>
                             <td>{{ x.quantity_sold }}</td>
-                            <td>{{ x.sell_date }}</td>
+                            <td>{{ x.datestamp }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -265,7 +265,7 @@
                         {% for trans in transaction %}
                         <tr>
                             <td>{{ trans.datestamp }}</td>
-                            <td>{{ trans.medicine_name }}</td>
+                            <td>{{ trans.name }}</td>
                             <td>{{ trans.quantity_sold }}</td>
                             <td>{{ trans.customer_name }}</td>
                             <td>{{ trans.phone_no }}</td>

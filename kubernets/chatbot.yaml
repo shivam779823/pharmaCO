@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: pharmaco-chatbot
-        image: shiva9921/pharmaco-chatbot:v1.017
+        image: shiva9921/pharmaco-chatbot:v1.021
         imagePullPolicy: Always
         ports:
         - containerPort: 8080

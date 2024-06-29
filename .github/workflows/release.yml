@@ -5,12 +5,15 @@
 name: CI Pipeline - release
 on:
   workflow_dispatch: 
-  push: 
-    branches: 
-      - main
-    paths-ignore: 
-      - '.github/**'
-      - 'README.md'
+  # push: 
+  #   branches: 
+  #     - main
+  #   paths-ignore: 
+  #     - '.github/**'
+  #     - 'README.md'
+  release:
+    types: [created]
+    
 env:     
   IMAGE: pharmaco
   DOCKERHUB_USERNAME: shiva9921 
