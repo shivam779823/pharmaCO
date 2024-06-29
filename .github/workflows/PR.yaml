@@ -41,14 +41,11 @@ jobs:
         with:
           python-version: 3.9
 
-      - name: install dependencies
-        run: |
-          pip install pylint
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi  
-
-      - name: Linting
+      - name: Linting & Coverage
         if: env.Turn_off_gate != 'true'
         run: |
+          pip install pylint
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi 
           pylint --output-format=json *.py > pylint_results.json || true
           pylint *.py | tail -n 2 >> pylint_results.json
           pylint *.py | tail -n 2 >> rating.txt
@@ -92,7 +89,7 @@ jobs:
         run: |
           docker push ${{env.DOCKERHUB_USERNAME}}/${{env.IMAGE}}:v1.${{github.run_number}} 
 
-      - name: Run Trivy vulnerability scanner
+      - name: Run Trivy Scanner
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: '${{env.DOCKERHUB_USERNAME}}/${{env.IMAGE}}:v1.${{github.run_number}}'
@@ -114,11 +111,17 @@ jobs:
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
-          # output: result.txt 
+          output: result.txt 
 
-      - name: Display Trivy scan summary
+      - name: Publish Trivy Output to Summary
         run: |
-          echo "# Trivy Scan Summary" >> $GITHUB_STEP_SUMMARY
-          echo "${{ steps.trivy_scan.outputs.summary }}" >> $GITHUB_STEP_SUMMARY
-        env:
-          GITHUB_STEP_SUMMARY: ${{ github.workflow }}:${{ github.run_id }}:${{ job.id }}:steps
+          if [[ -s result.txt ]]; then
+            echo "### Security Output" >> $GITHUB_STEP_SUMMARY
+            echo "<details><summary>Click to expand</summary>" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo '```Vulnerability report' >> $GITHUB_STEP_SUMMARY
+            cat result.txt >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            echo "</details>" >> $GITHUB_STEP_SUMMARY
+          fi
+        
