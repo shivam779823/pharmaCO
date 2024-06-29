@@ -1,35 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: pharmaco
+  name: pharmaco-chatbot
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: pharmaco
+      app: pharmaco-chatbot
   template:
     metadata:
       labels:
-        app: pharmaco
+        app: pharmaco-chatbot
     spec:
       containers:
-      - name: pharmaco
-        image: shiva9921/pharmaco-temp:v1.32
+      - name: pharmaco-chatbot
+        image: shiva9921/pharmaco-chatbot:v1.021
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 8080
-          initialDelaySeconds: 5
-          periodSeconds: 10
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 8080
-          initialDelaySeconds: 10
-          periodSeconds: 20
         env:
         - name: MYSQL_HOST
           valueFrom:
@@ -41,12 +29,6 @@ spec:
             configMapKeyRef:
               name: pharmaco-config-db        
               key: MYSQL_DB 
-
-        - name: CHATBOT_URL
-          valueFrom:
-            configMapKeyRef:
-              name: pharmaco-config-db        
-              key: CHATBOT_URL
  
         - name: MYSQL_USER
           valueFrom:
@@ -64,15 +46,15 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: pharmaco-service
+  name: pharmaco-chatbot-service
 spec:
   selector:
-    app: pharmaco
+    app: pharmaco-chatbot
   ports:
     - protocol: TCP
-      port: 80
-      targetPort: 8080
-  type: LoadBalancer
+      port: 81
+      targetPort: 8081
+  type: ClusterIP
   sessionAffinity: ClientIP  # Set session affinity to ClientIP
   sessionAffinityConfig:
     clientIP:

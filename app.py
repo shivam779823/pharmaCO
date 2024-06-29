@@ -5,6 +5,7 @@
 
 #Imports
 from flask import Flask, render_template, request, redirect, url_for , session ,send_file ,jsonify
+import requests
 import hashlib
 from datetime import datetime
 import os
@@ -27,7 +28,7 @@ MYSQL_HOST = os.environ.get("MYSQL_HOST", "localhost")
 MYSQL_USER = os.environ.get("MYSQL_USER", "test")
 MYSQL_PASSWORD = os.environ.get("MYSQL_PASSWORD", "12345678")
 MYSQL_DB = os.environ.get("MYSQL_DB", "pharmaco")
-
+CHATBOT_URL = os.environ.get("CHATBOT_URL", "http://pharmaco-chatbot-service:81/api/get_response" )
 # MySQL connection pooling
 db_config = {
     "host": MYSQL_HOST,
@@ -38,8 +39,6 @@ db_config = {
 }
 
 cnx_pool = pooling.MySQLConnectionPool(**db_config)
-
-
 
 
 # Define Prometheus metrics
@@ -68,6 +67,8 @@ ROUTE_LATENCY = Histogram(
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
+CHATBOT_API_URL = CHATBOT_URL
+
 
 
 # Middleware to capture metrics for each request
@@ -549,6 +550,32 @@ def metrics():
 ######################### METRICS ################################################
 
 
+@app.route('/chat')  
+@login_required
+def chat():
+    request_latency = time.time() - request.start_time
+    ROUTE_LATENCY.labels(request.path).observe(request_latency)
+    return render_template('chat.html')
+
+
+@app.route("/ask_bot", methods=["POST"])
+def ask_bot():
+    user_message = request.form.get("message")
+    if not user_message:
+        return jsonify(response="Please provide a message.")
+
+    try:
+        # Send user message to the bot with correct content type
+        headers = {'Content-Type': 'application/json'}
+        response = requests.post(CHATBOT_API_URL, json={"message": user_message}, headers=headers, timeout=5)
+        response.raise_for_status()
+        bot_response = response.json().get("response")
+        request_latency = time.time() - request.start_time
+        ROUTE_LATENCY.labels(request.path).observe(request_latency)
+        return jsonify(response=bot_response)  # Return JSON response
+    except requests.exceptions.RequestException as e:
+        return jsonify(response=f"Error communicating with chatbot: {str(e)}")
+
 #HOME
 
 @app.route('/')  
@@ -572,7 +599,7 @@ def home():
     ROUTE_LATENCY.labels(request.path).observe(request_latency)
 
 
-    return render_template('index.html', medicines=all_medicines, expired_medicines=expired_medicines , recently=recently , outstocks=out_of_stock_medicines ,users=users,sell=recently_sold ,total_expired=total_expired ,OFS=total_out_stocks ,total_sold=total_sold)
+    return render_template('index.html', medicines=all_medicines, expired_medicines=expired_medicines , recently=recently , outstocks=out_of_stock_medicines ,users=users,sell=recently_sold ,total_expired=total_expired ,OFS=total_out_stocks ,total_sold=total_sold , transaction=recently_sold )
 
 
 @app.route('/remove_user', methods=['GET', 'POST'])  

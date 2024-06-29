@@ -1,62 +1,61 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.appName }}
-  namespace: {{ .Values.Ns }}
+  name: pharmaco
+  annotations:
+    "helm.sh/hook": pre-install, pre-upgrade
+    "helm.sh/hook-weight": "1"
 spec:
-  replicas: 1
+  replicas: {{ .Values.pharmaco.replicas }}
   selector:
     matchLabels:
-      app: {{ .Values.appName }}
+      app: pharmaco
   template:
     metadata:
       labels:
-        name: {{ .Values.appName }}
+        app: pharmaco
     spec:
       containers:
-      - name: {{ .Values.appName }}
-        image: shiva9921/pharmaco:2
+      - name: pharmaco
+        image: {{ .Values.pharmaco.image.repository }}:{{ .Values.pharmaco.image.tag }}
+        imagePullPolicy: {{ .Values.pharmaco.image.pullPolicy }}
         ports:
-        - containerPort: 8080
+        - containerPort: {{ .Values.pharmaco.service.targetPort }}
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: {{ .Values.pharmaco.service.targetPort }}
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: {{ .Values.pharmaco.service.targetPort }}
+          initialDelaySeconds: 10
+          periodSeconds: 20
         env:
         - name: MYSQL_HOST
           valueFrom:
             configMapKeyRef:
-              name: pharmaco-config-db         
-              key: MYSQL_HOST 
+              name: pharmaco-config-db
+              key: MYSQL_HOST
         - name: MYSQL_DB
           valueFrom:
             configMapKeyRef:
-              name: pharmaco-config-db        
-              key: MYSQL_DB 
- 
-        - name: MYSQL_USER
-          valueFrom:
-            configMapKeyRef:
-              name: pharmaco-config-db        
-              key: MYSQL_USER
-
-        - name: MYSQL_PASSWORD
+              name: pharmaco-config-db
+              key: MYSQL_DB
+        - name: CHATBOT_URL
           valueFrom:
             configMapKeyRef:
               name: pharmaco-config-db
+              key: CHATBOT_URL
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: pharmaco-secret
+              key: MYSQL_USER
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: pharmaco-secret
               key: MYSQL_PASSWORD
-              
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{ .Values.appName }}-service
-  namespace: {{ .Values.Ns }}
-spec:
-  selector:
-    app: 
-  ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 8080
-  type: LoadBalancer
-  sessionAffinity: ClientIP  # Set session affinity to ClientIP
-  sessionAffinityConfig:
-    clientIP:
-      timeoutSeconds: 10800  # Set the session timeout (optional)

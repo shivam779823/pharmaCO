@@ -17,8 +17,10 @@ on:
       - '.github/**'
       - 'README.md'
 env:     
-  IMAGE: pharmaco
+  IMAGE: pharmaco-temp
+  IMAGE_PUSH: false
   DOCKERHUB_USERNAME: shiva9921 
+  Turn_off_gate: false
 
 jobs:
   build:
@@ -39,51 +41,88 @@ jobs:
         with:
           python-version: 3.9
 
-      - name: install dependencies
+      - name: Linting & Coverage
+        if: env.Turn_off_gate != 'true'
         run: |
           pip install pylint
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi  
-
-      - name: Linting
-        run: |
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi 
           pylint --output-format=json *.py > pylint_results.json || true
           pylint *.py | tail -n 2 >> pylint_results.json
+          pylint *.py | tail -n 2 >> rating.txt
 
       - name: Code Quality Gate Check
+        if: env.Turn_off_gate != 'true'
         id: parse_pylint
         run: |
-          rating=$(tail -n 2 pylint_results.json | cut -d ":" -f 2 | cut -d "/" -f1 | cut -d "." -d ":" -f 2 | cut -d "/" -f1 | cut -d "." -f1)
-          if (( $(echo "$rating < 7" ) )); then
+          rating=$(tail -n 2 rating.txt | cut -d ":" -f 2 | cut -d "/" -f1 | cut -d "." -d ":" -f 2 | cut -d "/" -f1 | cut -d "." -f1)
+          if (( $(echo "$rating >= 7" ) )); then
+            echo -e "# Code Quality Gate🚀 \n ## Scanning summary\n Code Rating : ${rating}  Gate : Pass✅" >> $GITHUB_STEP_SUMMARY
+          else
+            echo -e "# Code Quality Gate\n ## Scanning summary\n Code Rating : ${rating}  Gate : Failed ❌" >> $GITHUB_STEP_SUMMARY
             echo "Pylint rating is less than 7.00. Exiting pipeline."
             exit 1
           fi
+        
 
       - name: Upload Pylint results
+        
         uses: actions/upload-artifact@v2
-        if: always()
+        if: always() &&  env.Turn_off_gate != 'true'
         with:
           name: pylint-results
           path: pylint_results.json
-      #STEP 3 Dockerhub login
+     
       - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      #STEP 4 Build 
+    
       - name: Image Build
         run: |
           docker build -t ${{env.DOCKERHUB_USERNAME}}/${{env.IMAGE}}:v1.${{github.run_number}} .
+          echo -e "# Image Build👨‍🔧\n ## Version summary\n Image version : pharmaco-temp:v1.${{github.run_number}}"  >> $GITHUB_STEP_SUMMARY
 
-      - name: Run Trivy vulnerability scanner
+      - name: Image push
+        if: env.IMAGE_PUSH != 'false'
+        run: |
+          docker push ${{env.DOCKERHUB_USERNAME}}/${{env.IMAGE}}:v1.${{github.run_number}} 
+
+      - name: Run Trivy Scanner
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: '${{env.DOCKERHUB_USERNAME}}/${{env.IMAGE}}:v1.${{github.run_number}}'
           format: 'sarif'
-          output: 'trivy-results.sarif'
+          output: 'trivy-results.sarif' 
+
       
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: 'trivy-results.sarif'
+
+      - name: Run Trivy scan summary
+        id: trivy_scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: '${{env.DOCKERHUB_USERNAME}}/${{env.IMAGE}}:v1.${{github.run_number}}'
+          format: 'table'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL'
+          output: result.txt 
+          scanners: 'vuln,secret'
+
+      - name: Publish Trivy Output to Summary
+        run: |
+          if [[ -s result.txt ]]; then
+            echo "### Security Output" >> $GITHUB_STEP_SUMMARY
+            echo "<details><summary>Click to expand</summary>" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo '```Vulnerability report' >> $GITHUB_STEP_SUMMARY
+            cat result.txt >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            echo "</details>" >> $GITHUB_STEP_SUMMARY
+          fi
+        

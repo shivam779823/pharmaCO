@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: pharmaco-service
+spec:
+  selector:
+    app: pharmaco
+  ports:
+    - protocol: TCP
+      port: {{ .Values.pharmaco.service.port }}
+      targetPort: {{ .Values.pharmaco.service.targetPort }}
+  type: {{ .Values.pharmaco.service.type }}
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 10800

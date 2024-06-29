@@ -5,3 +5,4 @@ metadata:
 data:
   MYSQL_HOST : "mysql-service" 
   MYSQL_DB: "test"
+  CHATBOT_URL: "http://pharmaco-chatbot-service:81/api/get_response" 

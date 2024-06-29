@@ -1,56 +1,55 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>PharmaCO</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PharmaCO - Login</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='login.css') }}">
     <link rel="icon" href="{{ url_for('static', filename='icon-pharmaco.png') }}" type="image/x-icon">
-
 </head>
 <body>
-    <h1><img src="{{ url_for('static', filename='icon-pharmaco.png') }}" alt="PharmaCO Icon"> PharmaCO</h1>
+    <div class="header">
+        <h1><img src="{{ url_for('static', filename='icon-pharmaco.png') }}" alt="PharmaCO Icon"> PharmaCO</h1>
+    </div>
+
     <div class="preloader">
         <div class="loader"></div>
     </div>
-    
-    
+
     <div class="form-container">
         <form method="post" action="/login">
-            <div>
+            <div class="form-group">
                 <label for="username">Username:</label>
-                <input type="text" name="username" required>
+                <input type="text" id="username" name="username" required>
             </div>
-            <div>
+            <div class="form-group">
                 <label for="password">Password:</label>
-                <input type="password" name="password" required>
+                <input type="password" id="password" name="password" required>
             </div>
             <div class="button-container">
-                <input type="submit" value="Login">
-                <a href="/register"><button type="button">New User</button></a>
+                <input type="submit" value="Login" class="btn">
+                <a href="/register" class="btn-alt">New User</a>
             </div>
             {% if message %}
-            <p>{{ message }}</p>
+            <p class="message">{{ message }}</p>
             {% endif %}
         </form>
     </div>
 
+    <footer>
+        <div class="footer">
+            <p>&copy; 2023 SHIVAM MAHAJAN. All rights reserved.</p>
+        </div>
+    </footer>
+
     <script>
         window.addEventListener("load", function () {
             const preloader = document.querySelector(".preloader");
-            preloader.style.display = "none";
+            preloader.classList.add('fade-out');
+            setTimeout(() => {
+                preloader.style.display = 'none';
+            }, 1000);
         });
     </script>
-    
-    
 </body>
-<footer>
-    <div class= "footer">
-        <p>&copy; 2023 SHIVAM MAHAJAN. All rights reserved.</p>
-    </div>
-    
-</footer>
 </html>
-
-
-
-
-

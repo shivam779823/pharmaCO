@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot UI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='chatbot.css') }}">
+
+</head>
+<body>
+    <nav>
+        <ul class="navbar">
+            <li><a href="{{ url_for('home') }}"><i class="fa-solid fa-house-medical"></i> Home</a></li>
+            <li><a href="{{ url_for('display_inventory') }}"><i class="fa-solid fa-truck-medical"></i>Inventory</a></li>
+            <li>
+                <div class="dropdown">
+                    <button class="dropbtn"><i class="fa-solid fa-trash"></i> Remove</button>
+                    <div class="dropdown-content">
+
+                        <a href="{{ url_for('remove_medicine', action='option1') }}">Remove Medicine</a>
+                        <a href="{{ url_for('remove_sales_history', action='option2') }}">Delete History</a>
+                      
+                    </div>
+                </div>
+            </li>
+            <li><a href="{{ url_for('register') }}"><i class="fa-solid fa-user-doctor"></i> Register</a></li>
+            <li><a href="{{ url_for('logout') }}"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+            <h1>PharmaCO <i class="fa-brands fa-opencart fa-lg" style="color: #74C0FC;"></i></h1>
+        </ul>
+    </nav>
+
+    <div class="chat-container">
+        <div class="chat-header">Chatbot</div>
+        <div class="chat-body" id="chat-content">
+            <div class="message bot-message">Hello! How can I help you?</div>
+        </div>
+        <div class="chat-input-container">
+            <form id="message-form">
+                <input type="text" class="chat-input" id="user-input" placeholder="Type your message here...">
+                <button class="send-button" type="submit">&#10148;</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('message-form');
+            const chatContent = document.getElementById('chat-content');
+
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const userInput = document.getElementById('user-input').value;
+                if (userInput.trim() === "") return;
+
+                const userMessage = document.createElement('div');
+                userMessage.className = 'message user-message';
+                userMessage.textContent = userInput;
+                chatContent.appendChild(userMessage);
+
+                document.getElementById('user-input').value = '';
+
+                fetch('/ask_bot', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({
+                        message: userInput,
+                    }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const botMessage = document.createElement('div');
+                    botMessage.className = 'message bot-message';
+                    botMessage.textContent = data.response;
+                    chatContent.appendChild(botMessage);
+                    chatContent.scrollTop = chatContent.scrollHeight;
+                });
+            });
+        });
+    </script>
+</body>
+</html>

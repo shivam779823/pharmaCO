@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pharmaco-chatbot
+  annotations:
+    "helm.sh/hook": pre-install, pre-upgrade
+    "helm.sh/hook-weight": "2"
+spec:
+  replicas: {{ .Values.chatbot.replicas }}
+  selector:
+    matchLabels:
+      app: pharmaco-chatbot
+  template:
+    metadata:
+      labels:
+        app: pharmaco-chatbot
+    spec:
+      containers:
+      - name: pharmaco-chatbot
+        image: {{ .Values.chatbot.image.repository }}:{{ .Values.chatbot.image.tag }}
+        imagePullPolicy: {{ .Values.chatbot.image.pullPolicy }}
+        ports:
+        - containerPort: 8080
+        env:
+        - name: MYSQL_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: pharmaco-config-db         
+              key: MYSQL_HOST 
+        - name: MYSQL_DB
+          valueFrom:
+            configMapKeyRef:
+              name: pharmaco-config-db        
+              key: MYSQL_DB 
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: pharmaco-secret
+              key: MYSQL_USER
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: pharmaco-secret
+              key: MYSQL_PASSWORD
