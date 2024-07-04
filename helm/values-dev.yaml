@@ -33,13 +33,13 @@ chatbot:
     port: 81
     targetPort: 8081
 
+Metabasedeploy: false
 metabase:
    replicas: 1
    service:
     type: LoadBalancer
     port: 80
     targetPort: 3000
-
 
 chatbotEnv:
   MYSQL_HOST: "mysql-service"
