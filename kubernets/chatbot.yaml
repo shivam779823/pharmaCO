@@ -17,7 +17,7 @@ spec:
         image: shiva9921/pharmaco-chatbot:v1.021
         imagePullPolicy: Always
         ports:
-        - containerPort: 8080
+        - containerPort: 8081
         env:
         - name: MYSQL_HOST
           valueFrom:
@@ -52,7 +52,7 @@ spec:
     app: pharmaco-chatbot
   ports:
     - protocol: TCP
-      port: 81
+      port: 8081
       targetPort: 8081
   type: ClusterIP
   sessionAffinity: ClientIP  # Set session affinity to ClientIP
