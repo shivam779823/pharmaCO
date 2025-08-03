@@ -7,9 +7,9 @@ spec:
     app: pharmaco-chatbot
   ports:
     - protocol: TCP
-      port: 81
-      targetPort: 8081
-  type: ClusterIP
+      port: {{ .Values.chatbot.service.port }}
+      targetPort: {{ .Values.chatbot.service.targetPort }}
+  type: {{ .Values.chatbot.service.type }}
   sessionAffinity: ClientIP
   sessionAffinityConfig:
     clientIP:

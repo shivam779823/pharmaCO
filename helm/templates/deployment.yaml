@@ -10,12 +10,10 @@ spec:
   selector:
     matchLabels:
       app: pharmaco
-      version: v1
   template:
     metadata:
       labels:
         app: pharmaco
-        version: v1
     spec:
       containers:
       - name: pharmaco
