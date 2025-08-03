@@ -1,0 +1,57 @@
+################
+# ISTIO
+#################
+
+# Gateway
+{{- if .Values.istio.enabled }}
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: {{ .values.istio.gateway.name}}
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: {{ .Values.istio.gateway.port }}
+      name: http
+      protocol: {{ .Values.istio.gateway.protocol }}
+    hosts:
+    - "*"
+
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: {{ .Values.istio.virtualService.name }}
+spec:
+  hosts:
+  - {{ .Values.istio.virtualService.hosts | join ", " }}
+  gateways:
+  - {{ .Values.istio.gateway.name }}
+  http:
+  - name: pharmaco route
+    route:
+      - destination:
+          host: {{ .Values.istio.virtualService.route.destination.host }}
+          subset: {{ .Values.istio.virtualService.route.destination.subset }}
+        weight: {{ .Values.istio.virtualService.route.weight }}
+
+---
+
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: {{ .Values.istio.destinationRule.name }}
+spec:
+  host: {{ .Values.istio.destinationRule.route.destination.host }}
+  subsets:
+  - name: {{ .Values.istio.destinationRule.route.destination.subset }}
+    labels:
+      app: pharmaco
+      version: v1
+    trafficPolicy:
+      loadBalancer:
+        simple: ROUND_ROBIN
+
+{{- end }}

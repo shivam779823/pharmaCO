@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dementia Assessment Game</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #ffffff;
+            font-family: Arial, sans-serif;
+            position: relative;
+        }
+
+        #game {
+            text-align: center;
+        }
+
+        #grid {
+            display: grid;
+            grid-template-columns: repeat(4, 100px);
+            grid-gap: 10px;
+            justify-content: center;
+        }
+
+        .card {
+            width: 100px;
+            height: 100px;
+            background-color: #2e8b57;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            color: white;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+
+        .card.flipped {
+            background-color: #fff;
+            color: #000;
+            cursor: default;
+        }
+
+        .card.matched {
+            background-color: #6a5acd; /* change color after match */
+            color: white;
+            cursor: default;
+        }
+
+        #score {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+
+        #wrong-attempts {
+            margin-top: 10px;
+            font-size: 18px;
+        }
+
+        #timer {
+            margin-top: 10px;
+            font-size: 18px;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+
+        #back-button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #2e8b57;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        #startButton {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #2e8b57;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+    
+    </style>
+</head>
+<body>
+    <div id="game">
+        <h1>Memory Matching Game</h1>
+        <div id="grid"></div>
+        <div id="score">Score: 0</div>
+        <div id="wrong-attempts">Wrong Attempts: 0</div>
+        <div id="timer">Time: 0s</div>
+        <div id="result"></div>
+        <button id="startButton">Start Game</button>
+        <button id="back-button">Back</button>
+    </div>
+   
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let cardArray = [
+                { name: '1', img: '1' },
+                { name: '1', img: '1' },
+                { name: '2', img: '2' },
+                { name: '2', img: '2' },
+                { name: '3', img: '3' },
+                { name: '3', img: '3' },
+                { name: '4', img: '4' },
+                { name: '4', img: '4' },
+                { name: '5', img: '5' },
+                { name: '5', img: '5' },
+                { name: '6', img: '6' },
+                { name: '6', img: '6' },
+            ];
+
+            const grid = document.getElementById('grid');
+            const scoreDisplay = document.getElementById('score');
+            const wrongAttemptsDisplay = document.getElementById('wrong-attempts');
+            const timerDisplay = document.getElementById('timer');
+            const resultDisplay = document.getElementById('result');
+            const startButton = document.getElementById('startButton');
+            const backButton = document.getElementById('back-button');
+            const chatbotButton = document.getElementById('chatbot-button');
+            const chatbotModal = document.getElementById('chatbot');
+            const chatbotMessageInput = document.getElementById('chatbot-message-input');
+            const chatbotSendButton = document.getElementById('chatbot-send-button');
+            const chatbotMessages = document.getElementById('chatbot-messages');
+
+            let score = 0;
+            let flippedCards = [];
+            let matchedCards = [];
+            let wrongAttempts = 0;
+            let timerInterval;
+            let secondsElapsed = 0;
+            let isGameRunning = false;
+
+            function shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            }
+
+            function createBoard() {
+                cardArray = shuffleArray(cardArray);
+                score = 0;
+                scoreDisplay.textContent = `Score: ${score}`;
+                wrongAttempts = 0;
+                wrongAttemptsDisplay.textContent = `Wrong Attempts: ${wrongAttempts}`;
+                secondsElapsed = 0;
+                timerDisplay.textContent = `Time: ${secondsElapsed}s`;
+                isGameRunning = true;
+                startTimer();
+
+                grid.innerHTML = '';
+                cardArray.forEach((card, index) => {
+                    const cardElement = document.createElement('div');
+                    cardElement.classList.add('card');
+                    cardElement.dataset.id = index;
+                    cardElement.innerHTML = `
+                        <div class="card-inner">
+                            <div class="card-front"></div>
+                            <div class="card-back">${card.img}</div>
+                        </div>`;
+                    cardElement.addEventListener('click', flipCard);
+                    grid.appendChild(cardElement);
+                });
+            }
+
+            function flipCard() {
+                if (!isGameRunning) return;
+                const cardId = this.dataset.id;
+                if (flippedCards.length < 2 && !flippedCards.includes(cardId) && !matchedCards.includes(cardId)) {
+                    this.classList.add('flipped');
+                    flippedCards.push(cardId);
+                    if (flippedCards.length === 2) {
+                        setTimeout(checkForMatch, 500);
+                    }
+                }
+            }
+
+            function checkForMatch() {
+                const cardOne = cardArray[flippedCards[0]];
+                const cardTwo = cardArray[flippedCards[1]];
+
+                if (cardOne.name === cardTwo.name) {
+                    matchedCards.push(flippedCards[0], flippedCards[1]);
+                    document.querySelectorAll('.card.flipped').forEach(card => {
+                        card.classList.add('matched');
+                    });
+                    score++;
+                    scoreDisplay.textContent = `Score: ${score}`;
+                    checkGameEnd();
+                } else {
+                    setTimeout(() => {
+                        document.querySelectorAll('.card.flipped').forEach(card => {
+                            card.classList.remove('flipped');
+                        });
+                    }, 1000);
+                    wrongAttempts++;
+                    wrongAttemptsDisplay.textContent = `Wrong Attempts: ${wrongAttempts}`;
+                }
+                flippedCards = [];
+            }
+
+            function checkGameEnd() {
+                if (matchedCards.length === cardArray.length) {
+                    clearInterval(timerInterval);
+                    isGameRunning = false;
+                    let gameResultMessage = `Congratulations! You completed the game with a score of ${score}. `;
+                    if (wrongAttempts > 0) {
+                        gameResultMessage += `You made ${wrongAttempts} wrong attempts. `;
+                    }
+                    if (score >= 10) {
+                        gameResultMessage += `Based on your score, you are performing well.`;
+                    } else {
+                        gameResultMessage += `Based on your score, you may want to consult a healthcare professional for advice.`;
+                    }
+                    resultDisplay.textContent = gameResultMessage;
+                    backButton.style.display = 'inline-block';
+                }
+            }
+
+            function startTimer() {
+                timerInterval = setInterval(() => {
+                    secondsElapsed++;
+                    timerDisplay.textContent = `Time: ${secondsElapsed}s`;
+                }, 1000);
+            }
+
+            startButton.addEventListener('click', () => {
+                if (!isGameRunning) {
+                    createBoard();
+                    resultDisplay.textContent = '';
+                    backButton.style.display = 'none';
+                }
+            });
+
+            backButton.addEventListener('click', () => {
+                resultDisplay.textContent = '';
+                backButton.style.display = 'none';
+                createBoard();
+            });
+
+            chatbotButton.addEventListener('click', () => {
+                chatbotModal.style.display = 'block';
+            });
+
+            chatbotSendButton.addEventListener('click', () => {
+                const message = chatbotMessageInput.value.trim();
+                if (message !== '') {
+                    const chatMessage = document.createElement('div');
+                    chatMessage.classList.add('chat-message');
+                    chatMessage.textContent = `You: ${message}`;
+                    chatbotMessages.appendChild(chatMessage);
+                    chatbotMessageInput.value = '';
+                    chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+                    // Here you could add logic to respond to the user input
+                    simulateChatbotResponse(message);
+                }
+            });
+
+            function simulateChatbotResponse(message) {
+                const response = getChatbotResponse(message); // Replace with actual chatbot logic
+                const chatMessage = document.createElement('div');
+                chatMessage.classList.add('chat-message');
+                chatMessage.textContent = `Chatbot: ${response}`;
+                chatbotMessages.appendChild(chatMessage);
+                chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+            }
+
+            function getChatbotResponse(message) {
+                // Example responses based on message content
+                if (message.toLowerCase().includes('hello')) {
+                    return 'Hello there! How can I help you today?';
+                } else if (message.toLowerCase().includes('how are you')) {
+                    return 'I am just a bot, but thanks for asking!';
+                } else {
+                    return 'I apologize, but I am a simple bot and cannot understand that.';
+                }
+            }
+
+            window.addEventListener('click', (event) => {
+                if (event.target === chatbotModal) {
+                    chatbotModal.style.display = 'none';
+                }
+            });
+
+            createBoard();
+        });
+    </script>
+</body>
+</html>

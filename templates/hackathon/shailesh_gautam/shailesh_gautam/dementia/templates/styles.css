@@ -1,0 +1,86 @@
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-family: Arial, sans-serif;
+    background-image: url(./images/brain.webp);
+    background-size: cover;
+}
+
+.navbar {
+    background-color: #134B70 !important; /* Set the navbar background color */
+}
+
+.container {
+    display: flex;
+    gap: 20px;
+}
+
+.tile {
+    background: #b98c7d85;
+    box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+    backdrop-filter: blur( 3.5px );
+    -webkit-backdrop-filter: blur( 3.5px );
+    border-radius: 10px;
+    border: 1px solid rgba( 255, 255, 255, 0.18 );
+    width: 400px;
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 15px;
+    border: 1px solid rgb(255, 255, 255);
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+
+
+.tile img {
+    width: 90px;
+    height: 100px;
+    margin-bottom: 10px;
+    border: 3px solid white; /* Add a white border */
+    border-radius: 50%; /* Make the border circular */
+}
+
+.tile h2 {
+    margin: 0;
+    color: #333;
+}
+
+.tile:hover {
+    transform: scale(1.05);
+}
+
+.chatbot-button {
+    position: fixed;
+    bottom: 50px;
+    right: 50px;
+    width: 100px;
+    height: 100px;
+    background-color: #d6dce2;
+    border: solid 1px;
+    border-radius: 50%;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+    z-index: 1000; /* Ensure the button is above other elements */
+}
+
+.chatbot-button img {
+    width: 60px;
+    height: 60px;
+}
+
+.chatbot-button:hover {
+    transform: scale(1.1);
+    background-color: #cacaca; /* Slightly darken the button on hover */
+}
