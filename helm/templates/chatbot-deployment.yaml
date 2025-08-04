@@ -20,7 +20,7 @@ spec:
         image: {{ .Values.chatbot.image.repository }}:{{ .Values.chatbot.image.tag }}
         imagePullPolicy: {{ .Values.chatbot.image.pullPolicy }}
         ports:
-        - containerPort: {{ .Values.chatbot.containerPort }}
+        - containerPort: {{ .Values.chatbot.service.targetPort }} # Corrected line
         env:
         - name: MYSQL_HOST
           valueFrom:

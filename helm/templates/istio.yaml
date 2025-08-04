@@ -3,19 +3,18 @@
 #################
 
 # Gateway
-{{- if .Values.istio.enabled }}
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
-  name: {{ .values.istio.gateway.name}}
+  name: pharmaco-gateway
 spec:
   selector:
     istio: ingressgateway
   servers:
   - port:
-      number: {{ .Values.istio.gateway.port }}
+      number: 80
       name: http
-      protocol: {{ .Values.istio.gateway.protocol }}
+      protocol: HTTP
     hosts:
     - "*"
 
@@ -23,35 +22,33 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: {{ .Values.istio.virtualService.name }}
+  name: pharmaco-virtual-service
 spec:
   hosts:
-  - {{ .Values.istio.virtualService.hosts | join ", " }}
+  - "*"
   gateways:
-  - {{ .Values.istio.gateway.name }}
+  - pharmaco-gateway
   http:
   - name: pharmaco route
     route:
       - destination:
-          host: {{ .Values.istio.virtualService.route.destination.host }}
-          subset: {{ .Values.istio.virtualService.route.destination.subset }}
-        weight: {{ .Values.istio.virtualService.route.weight }}
+          host: pharmaco-service
+          subset: v1
+        weight: 100
 
 ---
 
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
-  name: {{ .Values.istio.destinationRule.name }}
+  name: pharmaco-destination-1
 spec:
-  host: {{ .Values.istio.destinationRule.route.destination.host }}
+  host: pharmaco-service
   subsets:
-  - name: {{ .Values.istio.destinationRule.route.destination.subset }}
+  - name: v1
     labels:
       app: pharmaco
       version: v1
     trafficPolicy:
       loadBalancer:
         simple: ROUND_ROBIN
-
-{{- end }}
