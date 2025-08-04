@@ -1,0 +1,14 @@
+{{- if .Values.Metabasedeploy }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: metabase-service
+spec:
+  ports:
+    - port: {{ .Values.metabase.service.port }}
+      targetPort: {{ .Values.metabase.service.targetPort }}
+  type: {{ .Values.metabase.service.type }}
+  selector:
+    app: metabase
+{{- end }}
+

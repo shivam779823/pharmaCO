@@ -10,6 +10,29 @@ pharmaco:
     port: 80
     targetPort: 8080
 
+
+istio:
+  enabled: true
+  gateway:
+    name: pharmaco-gateway
+    port: 80
+    protocol: HTTP
+  virtualService:
+    name: pharmaco-virtual-service
+    hosts:
+      - "*"
+    route:
+      - destination:
+          host: pharmaco-service
+          subset: v1
+        weight: 100
+  destinationRule:
+    name: pharmaco-destination-1
+    route:
+      destination:
+        host: pharmaco-service
+        subset: v1    
+  
 mysql:
   replicas: 1
   image:
@@ -32,6 +55,14 @@ chatbot:
     type: ClusterIP
     port: 81
     targetPort: 8081
+
+Metabasedeploy: false
+metabase:
+   replicas: 1
+   service:
+    type: LoadBalancer
+    port: 80
+    targetPort: 3000
 
 chatbotEnv:
   MYSQL_HOST: "mysql-service"

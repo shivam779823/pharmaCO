@@ -1,128 +1,147 @@
 #################################################
 # MAINTAINED BY: SHIVAM
 #################################################
-
-name: CI PR
+name: PR Pipeline
 on:
-  workflow_dispatch: 
-  pull_request:  
-    branches: 
+  workflow_dispatch:
+  pull_request:
+    branches:
       - main
       - dev
       - release/*
       - hotfix/*
       - fix/*
-
-    paths-ignore: 
+    paths-ignore:
       - '.github/**'
       - 'README.md'
-env:     
-  IMAGE: pharmaco-temp
-  IMAGE_PUSH: false
-  DOCKERHUB_USERNAME: shiva9921 
-  Turn_off_gate: false
+      - 'docs/**'
+      - '*.md'
+
+env:
+  IMAGE_NAME: pharmaco-temp
+  IMAGE_TAG: v1.${{ github.run_number }}
+  DOCKERHUB_USERNAME: shiva9921
+  QUALITY_GATE_ENABLED: true
+  QUALITY_GATE_THRESHOLD: 7.0
+  TRIVY_SEVERITY: 'CRITICAL,HIGH'
 
 jobs:
-  build:
+  code-quality:
+    name: Code Quality Checks
     permissions:
-      contents: read 
-      security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
-      actions: read 
+      contents: read
+      security-events: write
     runs-on: ubuntu-latest
 
     steps:
-      - name: code Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Set up Python 3.9
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
-          python-version: 3.9
+          python-version: '3.9'
+          cache: 'pip'
 
-      - name: Linting & Coverage
-        if: env.Turn_off_gate != 'true'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Run Pylint
+        if: env.QUALITY_GATE_ENABLED == 'true'
         run: |
           pip install pylint
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi 
           pylint --output-format=json *.py > pylint_results.json || true
-          pylint *.py | tail -n 2 >> pylint_results.json
-          pylint *.py | tail -n 2 >> rating.txt
+          pylint *.py | tee pylint_output.txt
+          grep -oP 'rated at \K\d+\.\d+' pylint_output.txt > rating.txt
 
-      - name: Code Quality Gate Check
-        if: env.Turn_off_gate != 'true'
-        id: parse_pylint
+      - name: Quality Gate Check
+        if: env.QUALITY_GATE_ENABLED == 'true'
+        id: quality-gate
         run: |
-          rating=$(tail -n 2 rating.txt | cut -d ":" -f 2 | cut -d "/" -f1 | cut -d "." -d ":" -f 2 | cut -d "/" -f1 | cut -d "." -f1)
-          if (( $(echo "$rating >= 7" ) )); then
-            echo -e "# Code Quality Gate🚀 \n ## Scanning summary\n Code Rating : ${rating}  Gate : Pass✅" >> $GITHUB_STEP_SUMMARY
+          rating=$(cat rating.txt)
+          echo "Code rating: $rating"
+          if (( $(echo "$rating >= $QUALITY_GATE_THRESHOLD" | bc -l) )); then
+            echo "PASSED=true" >> $GITHUB_OUTPUT
+            echo -e "### ✅ Code Quality Gate Passed\n**Rating:** $rating (Threshold: $QUALITY_GATE_THRESHOLD)" >> $GITHUB_STEP_SUMMARY
           else
-            echo -e "# Code Quality Gate\n ## Scanning summary\n Code Rating : ${rating}  Gate : Failed ❌" >> $GITHUB_STEP_SUMMARY
-            echo "Pylint rating is less than 7.00. Exiting pipeline."
+            echo "PASSED=false" >> $GITHUB_OUTPUT
+            echo -e "### ❌ Code Quality Gate Failed\n**Rating:** $rating (Threshold: $QUALITY_GATE_THRESHOLD)" >> $GITHUB_STEP_SUMMARY
             exit 1
           fi
-        
 
       - name: Upload Pylint results
-        
-        uses: actions/upload-artifact@v2
-        if: always() &&  env.Turn_off_gate != 'true'
+        if: always() && env.QUALITY_GATE_ENABLED == 'true'
+        uses: actions/upload-artifact@v4
         with:
           name: pylint-results
-          path: pylint_results.json
-     
+          path: |
+            pylint_results.json
+            pylint_output.txt
+
+  build-and-scan:
+    name: Build and Security Scan
+    needs: code-quality
+    permissions:
+      contents: read
+      packages: write
+      security-events: write
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Login to Docker Hub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-    
-      - name: Image Build
+      - name: Build Docker image
         run: |
-          docker build -t ${{env.DOCKERHUB_USERNAME}}/${{env.IMAGE}}:v1.${{github.run_number}} .
-          echo -e "# Image Build👨‍🔧\n ## Version summary\n Image version : pharmaco-temp:v1.${{github.run_number}}"  >> $GITHUB_STEP_SUMMARY
+          docker build \
+            --tag ${{ env.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} \
+            --tag ${{ env.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest \
+            .
+          echo -e "### 🐳 Docker Image Built\n**Tags:**\n- ${{ env.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}\n- ${{ env.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest" >> $GITHUB_STEP_SUMMARY
 
-      - name: Image push
-        if: env.IMAGE_PUSH != 'false'
-        run: |
-          docker push ${{env.DOCKERHUB_USERNAME}}/${{env.IMAGE}}:v1.${{github.run_number}} 
-
-      - name: Run Trivy Scanner
+      - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
+        id: trivy-scan
         with:
-          image-ref: '${{env.DOCKERHUB_USERNAME}}/${{env.IMAGE}}:v1.${{github.run_number}}'
+          image-ref: '${{ env.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}'
           format: 'sarif'
-          output: 'trivy-results.sarif' 
+          output: 'trivy-results.sarif'
+          severity: ${{ env.TRIVY_SEVERITY }}
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          exit-code: '0'
 
-      
-      - name: Upload Trivy scan results to GitHub Security tab
+      - name: Upload Trivy results
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: 'trivy-results.sarif'
 
-      - name: Run Trivy scan summary
-        id: trivy_scan
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: '${{env.DOCKERHUB_USERNAME}}/${{env.IMAGE}}:v1.${{github.run_number}}'
-          format: 'table'
-          ignore-unfixed: true
-          vuln-type: 'os,library'
-          severity: 'UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL'
-          output: result.txt 
-          scanners: 'vuln,secret'
-
-      - name: Publish Trivy Output to Summary
+      - name: Generate Trivy report
         run: |
-          if [[ -s result.txt ]]; then
-            echo "### Security Output" >> $GITHUB_STEP_SUMMARY
-            echo "<details><summary>Click to expand</summary>" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo '```Vulnerability report' >> $GITHUB_STEP_SUMMARY
-            cat result.txt >> $GITHUB_STEP_SUMMARY
-            echo '```' >> $GITHUB_STEP_SUMMARY
-            echo "</details>" >> $GITHUB_STEP_SUMMARY
-          fi
-        
+          trivy image \
+            --format table \
+            --severity ${{ env.TRIVY_SEVERITY }} \
+            --ignore-unfixed \
+            --no-progress \
+            ${{ env.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} > trivy-report.txt
+          
+          echo -e "### 🔍 Security Scan Results\n<details>\n<summary>Vulnerability Report</summary>\n\n" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          cat trivy-report.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "\n</details>" >> $GITHUB_STEP_SUMMARY
+
+      - name: Push to Docker Hub (on main)
+        if: github.ref == 'refs/heads/main'
+        run: |
+          docker push ${{ env.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+          docker push ${{ env.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest
+          echo -e "### 📦 Image Pushed to Docker Hub\nSuccessfully pushed both versioned and latest tags" >> $GITHUB_STEP_SUMMARY

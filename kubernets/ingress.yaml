@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: pharmaco-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  tls:
+  - hosts:
+    - pharmaco.local
+    secretName: pharmaco-tls-secret
+  rules:
+  - host: pharmaco.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: pharmaco-service
+            port:
+              number: 80
+      - path: /api/get_response
+        pathType: Prefix
+        backend:
+          service:
+            name: pharmaco-chatbot-service
+            port:
+              number: 81
